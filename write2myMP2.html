@@ -1,0 +1,2713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Write to Your MP</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#1e40af"> <!-- Use primary color -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <link rel="manifest" id="manifestLink">
+  <style>
+   /* --- Variables --- */
+   :root {
+     scroll-behavior: smooth;
+     --primary-color: #1e40af; /* Indigo 800 */
+     --primary-dark: #1a3688; /* Slightly darker indigo */
+     --primary-light: #3b82f6; /* Blue 500 */
+     --primary-light-alt: #60a5fa; /* Blue 400 for subtle backgrounds */
+     --success-color: #10b981; /* Green 500 */
+     --danger-color: #ef4444; /* Red 500 */
+     --warning-color: #f59e0b; /* Amber 500 */
+     --info-color: #0ea5e9; /* Sky 500 */
+
+     --success-bg: rgba(16, 185, 129, 0.15);
+     --warning-bg: rgba(245, 158, 11, 0.15);
+     --info-bg: rgba(14, 165, 233, 0.15);
+     --danger-bg: rgba(239, 68, 68, 0.15);
+
+     --gray-50: #f9fafb;
+     --gray-100: #f3f4f6; /* Used for light backgrounds */
+     --gray-200: #e5e7eb; /* Used for borders */
+     --gray-300: #d1d5db;
+     --gray-400: #9ca3af;
+     --gray-500: #6b7280; /* Text muted */
+     --gray-600: #4b5563;
+     --gray-700: #374151; /* Darker text */
+     --gray-800: #1f2937;
+     --gray-900: #111827; /* Heading text */
+
+     --border-radius-sm: 0.5rem;
+     --border-radius: 0.75rem;
+     --border-radius-lg: 1rem;
+     --border-radius-full: 9999px; /* For badges/pills */
+
+     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+     --shadow-md: 0 6px 10px -2px rgba(0, 0, 0, 0.1), 0 3px 6px -2px rgba(0, 0, 0, 0.05);
+     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+     --transition-base: all 0.2s ease-in-out;
+   }
+
+   /* --- General Styles --- */
+   body {
+     background-color: var(--gray-50); /* Very light background */
+     color: var(--gray-800); /* Slightly softer text color */
+     font-family: 'Inter', sans-serif; /* Use Inter, fallback to sans-serif */
+     line-height: 1.65; /* Slightly increased line height */
+     transition: var(--transition-base); /* Smooth transitions for theme changes */
+     text-rendering: optimizeLegibility; /* Improve font rendering */
+     -webkit-font-smoothing: antialiased; /* Enable font smoothing */
+     -moz-osx-font-smoothing: grayscale;
+   }
+
+   h1, h2, h3, h4, h5, h6 {
+       color: var(--gray-900); /* Darker headings */
+       font-weight: 600; /* Semi-bold headings */
+   }
+
+   a {
+       color: var(--primary-color);
+       text-decoration: none;
+       transition: color 0.2s ease;
+   }
+
+   a:hover {
+       color: var(--primary-dark);
+       text-decoration: underline;
+   }
+
+   /* --- Hero Section --- */
+   .hero {
+     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%); /* Brighter gradient */
+     color: #fff;
+     padding: 3rem 0; /* More generous padding */
+     box-shadow: var(--shadow-md); /* Slightly stronger shadow */
+     margin-bottom: 2rem;
+   }
+
+   .hero h1 {
+     color: #fff; /* White heading */
+     font-weight: 700; /* Bold hero title */
+     margin-bottom: 0.5rem;
+   }
+
+   .hero .lead {
+     color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+     font-size: 1.1rem;
+   }
+
+   .hero .input-group .form-control {
+       border: none;
+       border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
+   }
+   .hero .input-group .btn {
+       border: none;
+       border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+       background-color: #fff;
+       color: var(--gray-700);
+       transition: var(--transition-base);
+   }
+   .hero .input-group .btn:hover {
+       background-color: var(--gray-100);
+       color: var(--gray-900);
+   }
+
+   .hero #constituencyLabel {
+       color: rgba(255, 255, 255, 0.9);
+       font-size: 0.875rem;
+       margin-top: 0.5rem !important;
+   }
+
+
+   /* --- Progress Bar & Steps --- */
+   .progress-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+   }
+
+   .progress {
+     height: 0.6rem; /* Slightly thicker */
+     border-radius: var(--border-radius-full); /* Fully rounded */
+     background-color: var(--gray-200);
+     overflow: hidden;
+     flex-grow: 1;
+   }
+
+   .progress-bar {
+     background-color: var(--primary-color);
+     transition: width 0.6s ease;
+     border-radius: var(--border-radius-full); /* Ensure bar itself is rounded */
+   }
+
+   .progress-steps {
+       display: flex;
+       justify-content: space-between;
+       width: 100%;
+       position: relative;
+       margin-top: -1.5rem; /* Position above the line */
+       z-index: 1;
+       pointer-events: none; /* Prevent clicks on steps */
+   }
+
+   .progress-step {
+     flex: 1;
+     text-align: center;
+     font-size: 0.875rem;
+     position: relative;
+     transition: color 0.3s ease, font-weight 0.3s ease;
+     color: var(--gray-500); /* Default color */
+     font-weight: 500;
+   }
+
+   .progress-step::before {
+       content: '';
+       display: block;
+       width: 16px;
+       height: 16px;
+       background-color: var(--gray-300);
+       border-radius: 50%;
+       border: 2px solid var(--gray-100);
+       position: absolute;
+       top: -2.5rem; /* Adjust to align with progress bar */
+       left: 50%;
+       transform: translateX(-50%);
+       transition: var(--transition-base);
+       z-index: 2;
+   }
+
+    .progress-step.active {
+     color: var(--gray-900); /* Darker text for active step */
+     font-weight: 600;
+    }
+
+   .progress-step.active::before {
+       background-color: var(--primary-color);
+       border-color: #fff; /* White border on active */
+   }
+
+    .progress-step.completed::before {
+        background-color: var(--success-color); /* Green for completed steps */
+        border-color: #fff;
+    }
+
+
+   /* --- Cards --- */
+   .card {
+     transition: var(--transition-base);
+     border: 1px solid var(--gray-200); /* Subtle border */
+     border-radius: var(--border-radius); /* Consistent radius */
+     background-color: #fff;
+     overflow: hidden;
+     box-shadow: var(--shadow); /* Default shadow */
+   }
+
+   .card:hover {
+     box-shadow: var(--shadow-md); /* Lift slightly on hover */
+   }
+
+
+   /* --- MP Card --- */
+   .mp-card {
+      box-shadow: var(--shadow-sm); /* Lighter shadow for the side card */
+   }
+   .mp-card:hover {
+     transform: translateY(-3px); /* Less vertical lift */
+     box-shadow: var(--shadow) !important; /* Match default shadow on hover */
+   }
+
+   .mp-img {
+     width: 140px; /* Slightly smaller image */
+     height: 140px;
+     object-fit: cover;
+     border-radius: 50%;
+     border: 4px solid #fff; /* Thinner border */
+     box-shadow: var(--shadow-sm);
+     transition: var(--transition-base);
+     margin-bottom: 1.5rem;
+   }
+
+   .mp-img:hover {
+     transform: scale(1.02); /* Subtle scale */
+     box-shadow: var(--shadow-md);
+   }
+
+   .mp-card .card-body {
+     padding: 2rem 1.5rem 1.5rem;
+   }
+
+   .mp-card .card-title {
+     font-weight: 700;
+     font-size: 1.75rem; /* Slightly smaller title */
+     margin-bottom: 0.25rem; /* Reduced margin */
+     color: var(--gray-900);
+   }
+
+   .mp-card .badge {
+       font-size: 0.85rem; /* Slightly smaller badge text */
+       padding: 0.35rem 1rem; /* Adjusted padding */
+       font-weight: 600;
+       border-radius: var(--border-radius-full);
+       letter-spacing: 0.3px;
+   }
+
+
+   /* --- Party badges (using updated color palette) --- */
+   .party-lab, .party-labour { background-color: #e4003b; color: white; } /* Labour Red */
+   .party-con, .party-conservative { background-color: #1a3688; color: white; } /* Conservative Blue (primary dark) */
+   .party-libdem, .party-ld { background-color: #f59e0b; color: white; } /* Lib Dem Amber (warning) */
+   .party-snp { background-color: #fcd34d; color: var(--gray-900); } /* SNP Yellow (Amber 300) */
+   .party-green { background-color: #4ade80; color: var(--gray-900); } /* Green 400 */
+   .party-plaidcymru { background-color: #047857; color: white; } /* Emerald 700 */
+   .party-dup { background-color: #d946ef; color: white; } /* Purple 500 */
+   .party-sf { background-color: #22c55e; color: white; } /* Green 500 */
+   .party-alliance { background-color: #facc15; color: var(--gray-900); } /* Yellow 400 */
+   .party-sdlp { background-color: #f97316; color: white; } /* Orange 500 */
+   .party-pc { background-color: #14b8a6; color: white; } /* Teal 500 */
+   .party-speaker { background-color: #6b7280; color: white; } /* Gray 500 */
+   .party-other, .party-independent { background-color: var(--gray-400); color: white; } /* Gray 400 */
+
+
+   /* --- Contact details section --- */
+   .contact-details {
+     padding: 0;
+     border-top: 1px solid var(--gray-200);
+     background-color: var(--gray-50);
+   }
+
+   .contact-section {
+     padding: 1.25rem 1.5rem;
+     border-bottom: 1px solid var(--gray-200);
+     margin: 0;
+   }
+
+   .contact-section:last-child {
+     border-bottom: none;
+   }
+
+   .contact-item {
+     margin-bottom: 0.75rem;
+   }
+
+   .contact-item:last-child {
+     margin-bottom: 0;
+   }
+
+   .icon-text {
+     display: flex;
+     align-items: center;
+     gap: 0.75rem; /* slightly more space between icon and text */
+   }
+
+   .icon-text i {
+     font-size: 1rem;
+     color: var(--gray-700);
+   }
+
+   .contact-section h6 {
+     font-weight: 600;
+     font-size: 0.95rem;
+     margin: 0;
+     color: var(--gray-900);
+   }
+
+   .contact-section h6 i {
+     color: var(--primary-color);
+     font-size: 1.1rem;
+   }
+
+   .contact-section h6 i.fa-map-marker-alt {
+     color: var(--success-color);
+   }
+
+   .contact-item span,
+   .contact-item a {
+     font-size: 0.9rem;
+     line-height: 1.5;
+     display: inline-block;
+     word-break: break-word;
+     hyphens: auto;
+     color: var(--gray-700);
+   }
+
+   .contact-item a {
+     color: var(--primary-color);
+     font-weight: 500;
+     text-decoration: none;
+   }
+
+   .contact-item a:hover {
+     text-decoration: underline;
+     color: var(--primary-dark);
+   }
+
+   .social-links {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 0.75rem;
+     padding: 1.25rem 1.5rem; /* Match section padding */
+     background-color: var(--gray-50); /* Keep light background */
+   }
+
+   .social-links a {
+     flex: 1;
+     min-width: calc(50% - 0.375rem); /* Adjusted min-width */
+     text-align: center;
+     padding: 0.6rem;
+     border-radius: var(--border-radius-sm); /* Smaller radius */
+     font-size: 0.9rem; /* Smaller font */
+     background-color: #fff; /* White background */
+     color: var(--gray-700);
+     font-weight: 500;
+     text-decoration: none;
+     transition: var(--transition-base);
+     border: 1px solid var(--gray-200);
+     display: inline-flex; /* Use flexbox for icon+text centering */
+     align-items: center;
+     justify-content: center;
+   }
+
+   .social-links a:hover {
+     transform: translateY(-1px); /* Less vertical lift */
+     box-shadow: var(--shadow-sm);
+     background-color: var(--gray-100); /* Subtle background change */
+     color: var(--gray-900);
+   }
+
+   .social-links i {
+     margin-right: 0.5rem;
+     width: 18px; /* Slightly wider icon space */
+     text-align: center;
+   }
+
+   /* --- Voting record section --- */
+   .voting-record {
+     background-color: var(--gray-50); /* Light background */
+     border-top: 1px solid var(--gray-200);
+     padding: 1.5rem; /* Consistent padding */
+   }
+
+   .voting-record h6 {
+     color: var(--gray-700);
+     font-size: 0.95rem;
+     margin-bottom: 1rem;
+     font-weight: 600;
+   }
+
+   .vote-item {
+       margin-bottom: 1rem; /* Added margin between items */
+   }
+   .vote-item:last-child {
+       margin-bottom: 0;
+   }
+
+   .vote-label {
+       font-size: 0.9rem;
+       color: var(--gray-700);
+       font-weight: 500;
+   }
+
+   .vote-percentage {
+       font-size: 0.85rem;
+       color: var(--gray-500);
+   }
+
+   .vote-bar {
+     height: 6px; /* Thinner bar */
+     border-radius: var(--border-radius-full);
+     margin-top: 4px; /* Space above bar */
+     background-color: var(--gray-200);
+     overflow: hidden;
+   }
+
+   .vote-bar > div { /* Direct children of vote-bar */
+       height: 100%;
+       transition: width 0.5s ease;
+   }
+
+   .vote-for { background-color: var(--success-color); }
+   .vote-against { background-color: var(--danger-color); }
+   .vote-abstain { background-color: var(--gray-500); } /* Use muted gray */
+   .vote-absent { background-color: var(--gray-300); } /* Lighter gray for absent */
+
+
+   /* --- Writing Tips / Placeholder --- */
+   .writing-tips {
+     background-color: var(--info-bg); /* Info light background */
+     border-radius: var(--border-radius);
+     padding: 1.5rem;
+     margin-bottom: 2rem;
+     border: 1px solid rgba(14, 165, 233, 0.2); /* Info light border */
+   }
+
+   .writing-tips h6 {
+       color: var(--gray-800);
+       font-weight: 600;
+       margin-bottom: 1rem;
+   }
+
+   .tip-item {
+     margin-bottom: 0.8rem; /* Reduced margin */
+     display: flex;
+     align-items: start;
+   }
+
+   .tip-number {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     width: 24px; /* Smaller number circle */
+     height: 24px;
+     background-color: var(--primary-color);
+     color: white;
+     border-radius: 50%;
+     margin-right: 0.75rem;
+     font-size: 0.875rem;
+     font-weight: 600;
+     flex-shrink: 0;
+   }
+
+    .mp-placeholder .blockquote-footer {
+        font-size: 0.8rem;
+        color: var(--gray-500);
+        margin-top: 0.5rem;
+    }
+
+
+   /* --- Form Styles --- */
+    #draftForm {
+        min-height: 60vh; /* Ensure form takes up reasonable space */
+    }
+
+   .form-floating > label {
+     padding-left: 1rem;
+     color: var(--gray-500); /* Muted label color */
+   }
+
+   .form-floating > .form-control,
+   .form-floating > .form-select {
+     padding: 1rem 1rem 0 1rem; /* Adjusted padding */
+     height: calc(3.5rem + 2px); /* Standard Bootstrap height */
+   }
+
+    .form-floating > .form-control-plaintext ~ label {
+        padding: 1rem 1rem 0 1rem;
+    }
+
+   .form-control, .form-select {
+     border: 1px solid var(--gray-300);
+     border-radius: var(--border-radius-sm);
+     padding: 0.75rem 1rem;
+     font-size: 1rem;
+     transition: var(--transition-base);
+   }
+
+   .form-control::placeholder {
+       color: var(--gray-400);
+       opacity: 1;
+   }
+
+   .form-control:focus, .form-select:focus {
+     border-color: var(--primary-light);
+     box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); /* Bootstrap focus ring */
+     background-color: #fff;
+   }
+
+    textarea.form-control {
+        min-height: 120px; /* Give textarea more space by default */
+        height: auto !important; /* Override inline style if any */
+        padding: 0.75rem 1rem;
+    }
+
+    .address-tooltip {
+        font-size: 0.85rem;
+        font-weight: 500;
+        background-color: var(--info-color);
+        color: white;
+        padding: 0.3rem 0.75rem;
+        border-radius: var(--border-radius-full);
+        cursor: help;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: var(--transition-base);
+    }
+    .address-tooltip:hover {
+        background-color: var(--info-color); /* Keep background on hover */
+        opacity: 0.9;
+    }
+    .address-tooltip i {
+        font-size: 0.9em;
+    }
+
+
+    .topic-badge {
+        background-color: var(--gray-100);
+        color: var(--gray-700);
+        border: 1px solid var(--gray-200);
+        padding: 0.4rem 1rem;
+        border-radius: var(--border-radius-full);
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition-base);
+        font-size: 0.875rem;
+        display: inline-block; /* Ensure proper spacing */
+    }
+
+    .topic-badge:hover {
+        background-color: var(--primary-light-alt); /* Lighter primary */
+        color: var(--primary-dark);
+        border-color: var(--primary-light);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+
+   .char-count {
+     text-align: right;
+     font-size: 0.75rem;
+     margin-top: 0.25rem;
+     color: var(--gray-500); /* Muted gray */
+     position: absolute; /* Position relative to textarea container */
+     bottom: 8px;
+     right: 16px;
+     background-color: #fff; /* Ensure visibility on white background */
+     padding-left: 8px;
+   }
+
+   .char-count.warning {
+     color: var(--danger-color); /* Red for warning */
+     font-weight: bold;
+   }
+
+   /* --- Buttons --- */
+   .btn {
+       font-weight: 500;
+       transition: var(--transition-base);
+       border-radius: var(--border-radius-sm);
+   }
+
+   .btn-primary {
+     background-color: var(--primary-color);
+     border-color: var(--primary-color);
+   }
+
+   .btn-primary:hover {
+     background-color: var(--primary-dark);
+     border-color: var(--primary-dark);
+   }
+
+   .btn-light {
+     background-color: white;
+     border: 1px solid var(--gray-200);
+     color: var(--gray-700);
+   }
+
+   .btn-light:hover {
+     background-color: var(--gray-100);
+     color: var(--gray-900);
+     border-color: var(--gray-300);
+   }
+
+   .btn-outline-secondary {
+     border-color: var(--gray-300);
+     color: var(--gray-700);
+   }
+
+   .btn-outline-secondary:hover {
+     background-color: var(--gray-100);
+     border-color: var(--gray-300);
+     color: var(--gray-900);
+   }
+
+   .btn-sm {
+       font-size: 0.875rem;
+       padding: 0.45rem 0.9rem;
+       border-radius: var(--border-radius-sm);
+   }
+
+   /* --- Utilities & Helpers --- */
+   .shadow-sm { box-shadow: var(--shadow-sm) !important; }
+   .shadow { box-shadow: var(--shadow) !important; }
+   .shadow-md { box-shadow: var(--shadow-md) !important; }
+   .shadow-lg { box-shadow: var(--shadow-lg) !important; }
+
+
+   /* --- Dark Mode (Contrast) --- */
+   body.contrast {
+     background: #121212; /* Deep dark background */
+     color: #e0e0e0; /* Light gray text */
+   }
+
+   body.contrast h1, body.contrast h2, body.contrast h3, body.contrast h4, body.contrast h5, body.contrast h6 {
+       color: #ffffff; /* White headings */
+   }
+
+    body.contrast a {
+        color: #bb86fc; /* Purple for links */
+    }
+    body.contrast a:hover {
+        color: #3700b3; /* Darker purple */
+        text-decoration: underline;
+    }
+
+
+   body.contrast .hero {
+     background: #1f1f1f; /* Darker hero background */
+     color: #e0e0e0;
+     box-shadow: 0 4px 6px rgba(255,255,255,0.1);
+   }
+    body.contrast .hero h1 { color: #ffffff; }
+    body.contrast .hero .lead { color: rgba(255, 255, 255, 0.8); }
+    body.contrast .hero #constituencyLabel { color: rgba(255, 255, 255, 0.8); }
+
+   body.contrast .card {
+     background: #1e1e1e; /* Dark card background */
+     color: #e0e0e0;
+     border-color: #333;
+     box-shadow: 0 2px 4px rgba(255,255,255,0.08);
+   }
+    body.contrast .card:hover { box-shadow: 0 4px 8px rgba(255,255,255,0.12); }
+
+   body.contrast .mp-card { box-shadow: 0 1px 2px rgba(255,255,255,0.06); }
+   body.contrast .mp-card:hover { box-shadow: 0 2px 4px rgba(255,255,255,0.08) !important; }
+
+    body.contrast .mp-img { border-color: #1e1e1e; box-shadow: 0 1px 2px rgba(255,255,255,0.05); }
+    body.contrast .mp-img:hover { box-shadow: 0 2px 4px rgba(255,255,255,0.08); }
+
+   body.contrast .party-lab, body.contrast .party-labour { background-color: #cf6679; color: #121212; } /* Light red */
+   body.contrast .party-con, body.contrast .party-conservative { background-color: #bb86fc; color: #121212; } /* Light purple */
+   body.contrast .party-libdem, body.contrast .party-ld { background-color: #fcc419; color: #121212; } /* Light amber */
+   body.contrast .party-snp { background-color: #fff; color: #121212; } /* White */
+   body.contrast .party-green { background-color: #66bb6a; color: #121212; } /* Light green */
+   body.contrast .party-plaidcymru { background-color: #00c4a9; color: #121212; } /* Light teal */
+   body.contrast .party-dup { background-color: #ef99f8; color: #121212; } /* Lighter purple */
+   body.contrast .party-sf { background-color: #81c784; color: #121212; } /* Lighter green */
+   body.contrast .party-alliance { background-color: #fff176; color: #121212; } /* Lighter yellow */
+   body.contrast .party-sdlp { background-color: #ffb74d; color: #121212; } /* Lighter orange */
+   body.contrast .party-pc { background-color: #4db6ac; color: #121212; } /* Lighter teal */
+   body.contrast .party-speaker { background-color: #9e9e9e; color: #121212; } /* Gray */
+   body.contrast .party-other, body.contrast .party-independent { background-color: #b0b0b0; color: #121212; } /* Light gray */
+
+
+   body.contrast .contact-details { background-color: #2a2a2a; border-color: #444; }
+   body.contrast .contact-section { border-color: #444; }
+   body.contrast .contact-section h6 { color: #fff; }
+   body.contrast .icon-text i { color: #b0b0b0; } /* Lighter gray icons */
+   body.contrast .contact-section h6 i { color: #bb86fc; } /* Purple */
+   body.contrast .contact-section h6 i.fa-map-marker-alt { color: #03dac6; } /* Teal */
+   body.contrast .contact-item span, body.contrast .contact-item a { color: #e0e0e0; }
+   body.contrast .contact-item a { color: #bb86fc; } /* Purple links */
+   body.contrast .contact-item a:hover { color: #d0bfff; /* Lighter purple */ }
+
+   body.contrast .social-links { background-color: #2a2a2a; }
+   body.contrast .social-links a {
+        background-color: #3a3a3a;
+        color: #e0e0e0;
+        border-color: #4a4a4a;
+    }
+    body.contrast .social-links a:hover {
+        background-color: #4a4a4a;
+        color: #fff;
+        box-shadow: none;
+        transform: none;
+    }
+
+   body.contrast .voting-record { background-color: #2a2a2a; border-color: #444; }
+    body.contrast .voting-record h6 { color: #fff; }
+    body.contrast .vote-label { color: #e0e0e0; }
+    body.contrast .vote-percentage { color: #b0b0b0; }
+    body.contrast .vote-bar { background-color: #4a4a4a; }
+    body.contrast .vote-for { background-color: #03dac6; } /* Teal */
+    body.contrast .vote-against { background-color: #cf6679; } /* Light red */
+    body.contrast .vote-abstain { background-color: #b0b0b0; } /* Gray */
+    body.contrast .vote-absent { background-color: #909090; } /* Darker gray */
+
+   body.contrast .writing-tips {
+       background-color: rgba(14, 165, 233, 0.2); /* Info bg */
+       border-color: rgba(14, 165, 233, 0.3); /* Info border */
+       color: #e0e0e0;
+   }
+    body.contrast .writing-tips h6 { color: #fff; }
+    body.contrast .tip-number { background-color: #bb86fc; color: #121212; } /* Purple */
+
+   body.contrast .text-muted { color: #b0b0b0 !important; } /* Ensure muted text is visible */
+
+   body.contrast .form-control,
+   body.contrast .form-select {
+     background-color: #3a3a3a;
+     color: #e0e0e0;
+     border-color: #4a4a4a;
+   }
+   body.contrast .form-control::placeholder { color: #b0b0b0; }
+   body.contrast .form-control:focus, body.contrast .form-select:focus {
+       border-color: #bb86fc; /* Purple focus */
+       box-shadow: 0 0 0 0.25rem rgba(187, 134, 252, 0.25);
+       background-color: #3a3a3a;
+   }
+    body.contrast .form-floating > label { color: #b0b0b0; }
+    body.contrast .char-count { color: #b0b0b0; background-color: #3a3a3a; }
+    body.contrast .char-count.warning { color: #cf6679; } /* Red warning */
+
+    body.contrast .topic-badge {
+        background-color: #3a3a3a;
+        color: #e0e0e0;
+        border-color: #4a4a4a;
+    }
+    body.contrast .topic-badge:hover {
+        background-color: #4a4a4a;
+        color: #fff;
+        border-color: #5a5a5a;
+        transform: none;
+        box-shadow: none;
+    }
+
+   body.contrast .btn-primary {
+     background-color: #bb86fc;
+     border-color: #bb86fc;
+     color: #121212; /* Dark text on light button */
+   }
+   body.contrast .btn-primary:hover {
+     background-color: #3700b3;
+     border-color: #3700b3;
+     color: #fff;
+   }
+
+   body.contrast .btn-outline-secondary {
+     border-color: #4a4a4a;
+     color: #e0e0e0;
+   }
+   body.contrast .btn-outline-secondary:hover {
+     background-color: #3a3a3a;
+     border-color: #4a4a4a;
+     color: #fff;
+   }
+
+   body.contrast .dropdown-menu {
+       background-color: #1e1e1e;
+       border-color: #4a4a4a;
+       box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+   }
+    body.contrast .dropdown-item { color: #e0e0e0; }
+    body.contrast .dropdown-item:hover { background-color: #3a3a3a; color: #fff; }
+    body.contrast .dropdown-divider { border-top-color: #4a4a4a; }
+    body.contrast .dropdown-item-danger { color: #cf6679; }
+    body.contrast .dropdown-item-danger:hover, body.contrast .dropdown-item-danger:focus { background-color: #cf6679; color: #121212; }
+
+   body.contrast footer {
+     background-color: #1a1a1a;
+     color: #b0b0b0;
+   }
+    body.contrast footer a { color: #b0b0b0; }
+    body.contrast footer a:hover { color: #e0e0e0; }
+
+
+   /* --- Loading/Toast --- */
+   .loading-overlay {
+     background-color: rgba(18,18,18,0.7); /* Darker overlay in contrast */
+     backdrop-filter: blur(6px); /* Stronger blur */
+   }
+
+   .toast {
+       background-color: #fff;
+       color: var(--gray-900);
+       border: 1px solid var(--gray-200);
+       box-shadow: var(--shadow);
+       border-radius: var(--border-radius-sm);
+   }
+   .toast-header {
+       background-color: var(--gray-100);
+       border-bottom-color: var(--gray-200);
+       color: var(--gray-900);
+       font-weight: 600;
+   }
+
+    /* Specific toast types (using Bootstrap's colors) */
+    .toast.text-bg-success { background-color: var(--success-color) !important; color: white !important; }
+    .toast.text-bg-success .toast-header { background-color: rgba(16, 185, 129, 0.8) !important; color: white !important; border-bottom-color: rgba(16, 185, 129, 0.9) !important;}
+     .toast.text-bg-success .btn-close { filter: invert(1) grayscale(100%) brightness(200%); } /* White close button */
+
+    .toast.text-bg-danger { background-color: var(--danger-color) !important; color: white !important;}
+    .toast.text-bg-danger .toast-header { background-color: rgba(239, 68, 68, 0.8) !important; color: white !important; border-bottom-color: rgba(239, 68, 68, 0.9) !important;}
+     .toast.text-bg-danger .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
+    .toast.text-bg-warning { background-color: var(--warning-color) !important; color: white !important;}
+    .toast.text-bg-warning .toast-header { background-color: rgba(245, 158, 11, 0.8) !important; color: white !important; border-bottom-color: rgba(245, 158, 11, 0.9) !important;}
+     .toast.text-bg-warning .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
+    .toast.text-bg-info { background-color: var(--info-color) !important; color: white !important;}
+    .toast.text-bg-info .toast-header { background-color: rgba(14, 165, 233, 0.8) !important; color: white !important; border-bottom-color: rgba(14, 165, 233, 0.9) !important;}
+     .toast.text-bg-info .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
+
+   body.contrast .toast {
+        background-color: #2a2a2a;
+        color: #e0e0e0;
+        border-color: #4a4a4a;
+        box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+   }
+   body.contrast .toast-header {
+        background-color: #3a3a3a;
+        border-bottom-color: #4a4a4a;
+        color: #fff;
+   }
+
+    body.contrast .toast.text-bg-success { background-color: #03dac6 !important; color: #121212 !important; }
+    body.contrast .toast.text-bg-success .toast-header { background-color: rgba(3, 218, 198, 0.8) !important; color: #121212 !important; border-bottom-color: rgba(3, 218, 198, 0.9) !important;}
+
+    body.contrast .toast.text-bg-danger { background-color: #cf6679 !important; color: #121212 !important; }
+    body.contrast .toast.text-bg-danger .toast-header { background-color: rgba(207, 102, 121, 0.8) !important; color: #121212 !important; border-bottom-color: rgba(207, 102, 121, 0.9) !important;}
+
+
+   /* --- Modals --- */
+    .modal-content {
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        border: none;
+    }
+    .modal-header {
+        border-bottom: 1px solid var(--gray-200);
+    }
+    .modal-footer {
+        border-top: 1px solid var(--gray-200);
+    }
+
+    .modal-header.bg-success {
+        background-color: var(--success-color) !important;
+    }
+    .modal-header.bg-success .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+    body.contrast .modal-content {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+    }
+    body.contrast .modal-header, body.contrast .modal-footer {
+        border-color: #4a4a4a;
+    }
+    body.contrast .modal-header.bg-success {
+        background-color: #03dac6 !important; /* Teal */
+        color: #121212 !important;
+    }
+     body.contrast .modal-header.bg-success .btn-close {
+         filter: none;
+     }
+
+    .alert-warning {
+        background-color: var(--warning-bg);
+        border-color: rgba(245, 158, 11, 0.2);
+        color: var(--gray-900);
+    }
+    body.contrast .alert-warning {
+        background-color: rgba(245, 158, 11, 0.2);
+        border-color: rgba(245, 158, 11, 0.3);
+        color: #fff;
+    }
+
+
+   /* --- Footer --- */
+   footer {
+     background-color: var(--gray-900); /* Very dark background */
+     color: var(--gray-300); /* Light gray text */
+     font-size: 0.9rem;
+     padding: 2rem 0; /* Reduced padding */
+   }
+    footer h5 {
+        color: #fff; /* White headings */
+        font-weight: 600;
+        font-size: 1rem; /* Smaller footer headings */
+        margin-bottom: 1rem;
+    }
+    footer a {
+        color: var(--gray-400); /* Muted links */
+        transition: color 0.2s ease;
+        font-size: 0.9rem;
+    }
+    footer a:hover {
+        color: #fff; /* White on hover */
+        text-decoration: underline;
+    }
+    footer ul {
+        padding-left: 0;
+        list-style: none;
+    }
+    footer ul li {
+        margin-bottom: 0.5rem;
+    }
+
+    body.contrast footer {
+        background-color: #000; /* Pure black */
+        color: #a0a0a0;
+    }
+    body.contrast footer h5 { color: #fff; }
+    body.contrast footer a { color: #a0a0a0; }
+    body.contrast footer a:hover { color: #fff; }
+
+
+   /* --- Responsiveness --- */
+   @media (max-width: 768px) {
+     .hero {
+       padding: 2rem 0;
+     }
+     .hero h1 {
+       font-size: 2rem;
+       text-align: center;
+     }
+     .hero .lead {
+       font-size: 1.05rem;
+       text-align: center;
+     }
+     .hero .input-group {
+        width: 80%; /* Make input group narrower */
+        margin: 1rem auto 0; /* Center input group */
+     }
+     .hero #constituencyLabel {
+         text-align: center;
+     }
+
+     .progress-steps {
+        margin-top: -1.2rem; /* Adjust positioning */
+     }
+      .progress-step::before {
+          top: -2rem;
+      }
+
+     .mp-img {
+       width: 120px;
+       height: 120px;
+       margin-bottom: 1rem;
+     }
+     .mp-card .card-title {
+       font-size: 1.5rem;
+     }
+     .mp-card .card-body {
+         padding: 1.5rem 1rem 1rem; /* Reduced padding */
+     }
+
+     .contact-section, .social-links, .voting-record {
+        padding: 1rem; /* Reduced padding */
+     }
+     .social-links a {
+       min-width: calc(100% - 0.375rem); /* Full width buttons */
+     }
+
+     .writing-tips {
+        padding: 1.25rem;
+     }
+
+     .form-floating > .form-control,
+     .form-floating > .form-select,
+     .form-floating > .form-control-plaintext ~ label {
+        padding: 0.75rem 0.75rem 0 0.75rem;
+     }
+      .form-control, .form-select, textarea.form-control {
+          padding: 0.6rem 0.75rem;
+      }
+      textarea.form-control {
+          min-height: 100px;
+      }
+      .char-count {
+          right: 12px;
+          bottom: 6px;
+          font-size: 0.7rem;
+      }
+
+     .btn { font-size: 0.9rem; }
+
+     footer {
+         padding: 1.5rem 0;
+     }
+      footer h5 { font-size: 0.9rem; margin-bottom: 0.75rem;}
+      footer a, footer ul li { font-size: 0.85rem;}
+   }
+
+   @media (min-width: 768px) {
+       .hero .input-group {
+           width: 350px; /* Fixed width for desktop search */
+       }
+   }
+
+   /* Apply writing-tips styling to contact details - REMOVED BACKGROUND */
+   #mpContactDetails {
+       /* Removed background-color, border, padding, margin, border-radius */
+       border-top: none; /* Keep this to prevent double border */
+   }
+
+   /* Removed overrides for individual section borders/padding */
+   /* #mpContactDetails .contact-section { ... } */
+   /* #mpContactDetails .contact-section:last-child { ... } */
+
+   /* Keep section header styling adjustments */
+   #mpContactDetails .contact-section h6 {
+     font-weight: 600;
+     font-size: 0.95rem; 
+     margin-bottom: 1rem; 
+     color: var(--gray-700); 
+     display: flex;
+     align-items: center;
+     padding-left: 0;
+   }
+
+   #mpContactDetails .contact-section h6 i {
+     margin-right: 12px; 
+     font-size: 1.1rem;
+     padding: 0;
+     text-align: left;
+     background-color: transparent;
+     border-radius: 0;
+     width: auto;
+     height: auto;
+     font-weight: normal;
+     color: var(--primary-color);
+   }
+
+   #mpContactDetails .contact-section h6 i.fa-map-marker-alt {
+       color: var(--success-color);
+   }
+
+   /* Keep Style contact item icons like tip-number */
+   #mpContactDetails .contact-item {
+     display: flex;
+     margin-bottom: 0.75rem;
+     align-items: center; 
+     padding-left: 0;
+   }
+
+   #mpContactDetails .contact-item i {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     width: 28px;
+     height: 28px;
+     background-color: var(--primary-color);
+     color: white;
+     border-radius: 50%;
+     margin-right: 1rem; 
+     font-size: 0.875rem;
+     font-weight: 600;
+     flex-shrink: 0;
+     text-align: center; 
+     padding: 0;
+     font-family: 'Font Awesome 6 Free'; 
+   }
+
+   /* --- Contact details section (original rules - modified/removed above) --- */
+   /*
+   .contact-details {
+     padding: 0;
+     border-top: 1px solid var(--gray-200);
+     background-color: var(--gray-50); /* Light background for this section */
+   /*}
+   */
+
+   /* Original .contact-section rules - modified/removed above */
+   /*
+   .contact-section {
+     padding: 1.25rem 1.5rem; /* Consistent padding */
+   /*  border-bottom: 1px solid var(--gray-200);
+     margin: 0; /* Remove margin */
+   /*}
+   */
+
+   /* Original .contact-section:last-child rule - modified/removed above */
+   /*
+   .contact-section:last-child {
+     border-bottom: none;
+   }
+   */
+
+   /* Original .contact-section h6 rule - modified/removed above */
+   /*
+   .contact-section h6 {
+     font-weight: 600;
+     font-size: 0.95rem; /* Slightly smaller heading */
+   /*  margin-bottom: 1rem; /* Reduced margin */
+   /*  color: var(--gray-700); /* Darker gray for sub-headings */
+   /*  display: flex;
+     align-items: center;
+   }
+   */
+
+   /* Original .contact-section h6 i rule - modified/removed above */
+   /*
+   .contact-section h6 i {
+     margin-right: 12px; /* Reduced icon margin */
+   /*  font-size: 1.1rem;
+     color: var(--primary-color); /* Primary color for heading icons */
+   /*}
+   */
+
+   /* Original .contact-section h6 i.fa-map-marker-alt rule - modified/removed above */
+   /*
+   .contact-section h6 i.fa-map-marker-alt { /* Specific color for constituency icon */
+   /*    color: var(--success-color);
+   }
+   */
+
+   /* Original .contact-item rule - modified/removed above */
+   /*
+   .contact-item {
+     display: flex;
+     margin-bottom: 0.8rem; /* Reduced margin */
+   /*  align-items: flex-start;
+     padding-left: 0;
+   }
+   */
+
+   /* Original .contact-item:last-child rule - modified/removed above */
+   /*
+   .contact-item:last-child {
+     margin-bottom: 0;
+   }
+   */
+
+   /* Original .contact-item i rule - modified/removed above */
+   /*
+   .contact-item i {
+     margin-right: 12px; /* Reduced icon margin */
+   /*  text-align: center;
+     font-size: 1rem;
+     color: var(--gray-500); /* Gray for item icons */
+   /*  width: 20px; /* Fixed width for icons */
+   /*  flex-shrink: 0;
+   }
+   */
+  </style>
+</head>
+<body>
+<!-- Loading spinner overlay -->
+<div id="loadingOverlay" class="loading-overlay d-none">
+  <div class="spinner-border text-light loading-spinner" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<!-- Notification toast container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+<nav class="hero">
+ <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+    <div class="text-center text-md-start mb-3 mb-md-0">
+      <h1 class="fw-bold mb-1">Write to Your MP</h1>
+      <p class="lead mb-0">Type your postcode, draft & send – it's that simple.</p>
+    </div>
+    <div class="mt-md-0 text-center text-md-end">
+      <div class="input-group">
+        <input id="postcodeInput" class="form-control form-control-lg" placeholder="Your postcode" autocomplete="postal-code" aria-label="Enter your postcode" list="postcodeSuggestions">
+        <datalist id="postcodeSuggestions"></datalist>
+        <button id="findBtn" class="btn btn-light btn-lg"><i class="fa-solid fa-search me-1"></i>Find MP</button>
+      </div>
+      <small id="constituencyLabel" class="d-block mt-2 text-white fw-medium"></small>
+      <small id="postcodeError" class="d-block mt-1 text-warning fw-medium"></small>
+    </div>
+ </div>
+</nav>
+
+<main class="container my-5"> <!-- Added main tag and more vertical margin -->
+  <div class="progress-container mb-4">
+    <div class="progress w-100">
+      <div id="progressBar" class="progress-bar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" role="progressbar" aria-label="Progress"></div>
+    </div>
+    <div class="dropdown ms-3"> <!-- Added ms-3 for space -->
+      <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Settings dropdown">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
+        <li><button id="contrastBtn" class="dropdown-item"><i class="fa-solid fa-circle-half-stroke fa-fw me-2"></i>High contrast mode</button></li> <!-- fa-fw for consistent width -->
+        <li><button id="fontSizeBtn" class="dropdown-item"><i class="fa-solid fa-text-height fa-fw me-2"></i>Larger text</button></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><button id="resetBtn" class="dropdown-item dropdown-item-danger"><i class="fa-solid fa-trash fa-fw me-2"></i>Reset form</button></li>
+      </ul>
+    </div>
+  </div>
+  <div class="progress-steps mb-5 text-muted"> <!-- Positioning adjustment -->
+     <span class="progress-step" data-step="1">Find MP</span>
+     <span class="progress-step" data-step="2">Draft Message</span> <!-- Slightly clearer label -->
+     <span class="progress-step" data-step="3">Review & Send</span>
+  </div>
+
+  <div id="contentArea" class="row gy-5"> <!-- More vertical gutter -->
+    <!-- MP card -->
+    <div class="col-md-4">
+      <div id="mpCard" class="card shadow-sm d-none mp-card">
+        <div class="card-body text-center position-relative">
+          <div class="dropdown writing-guidelines position-absolute top-0 end-0 m-3"> <!-- Position adjustment -->
+            <button class="btn btn-sm btn-link text-muted p-0" type="button" id="guidelineDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Writing guidelines">
+              <i class="fa-solid fa-circle-info fa-lg"></i> <!-- Slightly larger icon -->
+            </button>
+            <div class="dropdown-menu p-3 dropdown-menu-end" style="width: 300px;">
+              <h6 class="mb-2">Writing Guidelines</h6>
+              <p class="small mb-2 text-muted">When writing to your MP:</p> <!-- Muted text -->
+              <ul class="small mb-0 ps-3 text-muted"> <!-- Muted text -->
+                <li>Be polite and respectful</li>
+                <li>Stick to one issue per message</li>
+                <li>Explain your personal connection</li>
+                <li>Be specific about what you want</li>
+                <li>Keep it concise (under 2000 characters recommended)</li> <!-- Updated from 500 words -->
+              </ul>
+            </div>
+          </div>
+          <img id="mpImg" class="mp-img mb-3" src="https://www.parliament.uk/static-image-placeholder.jpg" alt="Photo of MP Placeholder"> <!-- Default placeholder -->
+          <h2 id="mpName" class="card-title mb-2 h5"></h2> <!-- Changed to h5, still visually large -->
+          <div class="mb-2"><span id="mpParty" class="badge"></span></div>
+          <p id="mpConstituency" class="mb-1 text-muted small"></p> <!-- Constituency added below party -->
+          <p id="mpSince" class="mb-3 text-muted small"></p> <!-- Small text -->
+          <p id="mpEmail" class="d-none"></p> <!-- Kept hidden, used in JS -->
+          <p id="mpPhone" class="d-none"></p> <!-- Kept hidden, used in JS -->
+        </div>
+        <div id="mpContactDetails" class="contact-details">
+             <!-- Contact details will be injected here by JS -->
+        </div>
+        <div id="votingRecordSection" class="card-body small voting-record d-none"> <!-- Added ID and d-none initially -->
+          <h6 class="mb-3 fw-bold"><i class="fa-solid fa-chart-simple me-2 text-primary"></i>Recent Voting Record</h6>
+          <div class="vote-item">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="vote-label">NHS Funding</span>
+              <small class="vote-percentage">84% For</small>
+            </div>
+            <div class="vote-bar">
+              <div class="vote-for" style="width: 84%"></div>
+            </div>
+          </div>
+          <div class="vote-item">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="vote-label">Climate Bill</span>
+              <small class="vote-percentage">72% For</small>
+            </div>
+            <div class="vote-bar">
+              <div class="vote-for" style="width: 72%"></div>
+            </div>
+          </div>
+          <div class="vote-item">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="vote-label">Housing Development</span>
+              <small class="vote-percentage">23% For</small>
+            </div>
+            <div class="vote-bar">
+              <div class="vote-for" style="width: 23%"></div>
+            </div>
+          </div>
+           <div class="text-center mt-3">
+              <a id="votingLink" class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-chart-simple me-1"></i>Full voting record
+              </a>
+           </div>
+        </div>
+         <div id="mpLinksSection" class="card-footer text-center bg-light py-3 d-none"> <!-- Added ID, background, padding, d-none -->
+          <div class="d-flex gap-2 justify-content-center">
+            <a id="websiteLink" class="btn btn-sm btn-outline-secondary flex-grow-1 flex-md-grow-0" target="_blank" rel="noopener noreferrer"> <!-- Added flex classes -->
+              <i class="fa-solid fa-globe me-1"></i>Website
+            </a>
+             <!-- Social links might be better placed in the contact section injected by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Placeholder before MP lookup -->
+      <div id="mpPlaceholder" class="card shadow p-4 mp-placeholder"> <!-- Added mp-placeholder class -->
+        <div class="text-center mb-3">
+          <i class="fa-solid fa-user-tie fa-4x text-muted mb-3"></i>
+          <h5>Find Your MP</h5>
+          <p class="text-muted small mb-0">Enter your postcode in the search bar above to find your representative and their contact information.</p>
+        </div>
+        <hr class="my-4"> <!-- Added separator -->
+        <div class="writing-tips mb-0"> <!-- Reduced bottom margin -->
+          <h6 class="mb-3"><i class="fa-solid fa-lightbulb me-2 text-info"></i>Why write to your MP?</h6> <!-- Improved heading -->
+          <div class="tip-item">
+            <span class="tip-number">1</span>
+            <span>MPs prioritize messages from their own constituents.</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-number">2</span>
+            <span>Sharing your personal story makes your message more impactful.</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-number">3</span>
+            <span>Be specific about the policy or issue you want them to address.</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-number">4</span>
+            <span>Every message you send is logged and helps demonstrate constituent interest.</span>
+          </div>
+        </div>
+        <div class="text-center small mt-4 border-top pt-4 text-muted"> <!-- Added border and padding -->
+          <p class="mb-1">"MPs read all constituent messages and over 80% say these influence their decisions."</p>
+          <footer class="blockquote-footer">Parliamentary Digital Service, 2024</footer>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message form -->
+    <div class="col-md-8">
+      <form id="draftForm" class="card shadow p-4"> <!-- Added shadow class -->
+        <h3 class="mb-4">Compose your message</h3> <!-- More margin -->
+
+        <div class="alert alert-warning d-none" id="mpWarning">
+          <i class="fa-solid fa-triangle-exclamation me-2"></i>
+          Please find your MP by entering your postcode above before composing your message.
+        </div>
+
+        <div class="mb-4 pb-2 border-bottom"> <!-- Added bottom border and padding -->
+          <div class="d-flex justify-content-between align-items-center mb-3"> <!-- More margin -->
+            <h5 class="mb-0">Your Details</h5> <!-- Reduced margin -->
+            <span class="badge address-tooltip"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="MPs can only respond to their constituents. Your address verifies you're in their constituency.">
+              <i class="fa-solid fa-circle-info me-1"></i>Why needed? <!-- Shorter text -->
+            </span>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input id="fullName" class="form-control" placeholder="Full name" autocomplete="name" required>
+                <label for="fullName">Full name *</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input id="userEmail" type="email" class="form-control" placeholder="Email" autocomplete="email" required>
+                <label for="userEmail">Email *</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-floating">
+                <textarea id="userAddress" class="form-control" placeholder="Address" rows="3" autocomplete="street-address" required></textarea>
+                <label for="userAddress">Address *</label>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <div class="form-text text-muted">Include your full address including postcode</div>
+                <button type="button" id="findAddressBtn" class="btn btn-sm btn-outline-secondary">
+                  <i class="fa-solid fa-map-marker-alt me-1"></i>Find address from postcode
+                </button>
+              </div>
+              <!-- Address dropdown will appear here when postcode lookup is performed -->
+              <div id="addressLookupContainer" class="mt-2 d-none">
+                <select id="addressDropdown" class="form-select">
+                  <option value="" selected>Select your address...</option>
+                </select>
+                <div id="addressLookupStatus" class="form-text mt-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4 pb-2"> <!-- Added bottom padding -->
+          <h5 class="mb-3">Message Details</h5> <!-- More margin -->
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label text-muted">Topic (Optional)</label> <!-- Muted label -->
+              <select id="topicSelect" class="form-select"> <!-- Removed required -->
+                <option value="" selected>Choose a topic (Optional)</option> <!-- Updated text -->
+                <option value="nhs">NHS & Healthcare</option>
+                <option value="education">Education</option>
+                <option value="climate">Climate & Environment</option>
+                <option value="housing">Housing</option>
+                <option value="economy">Economy & Jobs</option>
+                <option value="immigration">Immigration & Asylum</option>
+                <option value="transport">Transport & Infrastructure</option>
+                <option value="benefits">Benefits & Welfare</option>
+                <option value="crime">Crime & Policing</option>
+                <option value="foreign">Foreign Policy</option>
+                <option value="other">Other</option>
+              </select>
+              <div id="topicBadges" class="d-flex flex-wrap gap-2 mt-3"> <!-- Added ID, more top margin -->
+                <span class="topic-badge">NHS Waiting Times</span>
+                <span class="topic-badge">School Funding</span>
+                <span class="topic-badge">Climate Action</span>
+                <span class="topic-badge">Social Housing</span>
+                <span class="topic-badge">Rail Services</span>
+                <span class="topic-badge">Cost of Living</span>
+                 <span class="topic-badge">Local Issues</span> <!-- Added more options -->
+                 <span class="topic-badge">Benefit Cuts</span>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-floating">
+                <input id="emailSubject" class="form-control" placeholder="Subject" required>
+                <label for="emailSubject">Subject *</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <label for="emailBody" class="form-label text-muted">Message *</label> <!-- Muted label -->
+              <div class="position-relative">
+                <textarea id="emailBody" class="form-control" rows="10" required></textarea>
+                <div id="charCount" class="char-count">0 / 2000</div> <!-- Added total limit -->
+              </div>
+              <div class="d-flex justify-content-between align-items-center mt-2"> <!-- Aligned items -->
+                <div class="form-text text-muted">Be polite, personal and specific. Max 2000 characters.</div> <!-- Muted text, added limit -->
+                <button type="button" id="templateBtn" class="btn btn-sm btn-outline-secondary">
+                  <i class="fa-solid fa-wand-magic-sparkles me-1"></i>Use template
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-check mb-3">
+          <input id="copyMe" type="checkbox" class="form-check-input" checked>
+          <label class="form-check-label text-muted" for="copyMe">Send me a copy of this message</label> <!-- Muted text, clearer label -->
+        </div>
+
+        <div class="form-check mb-4">
+          <input id="privacyConsent" type="checkbox" class="form-check-input" required>
+          <label class="form-check-label text-muted" for="privacyConsent"> <!-- Muted text -->
+            I confirm that I'm a constituent and agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">privacy policy</a> *
+          </label>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end"> <!-- Flex buttons on medium screens+ -->
+          <button id="previewBtn" type="button" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-eye me-1"></i>Preview Message
+          </button>
+          <button id="sendBtn" type="submit" class="btn btn-primary" disabled>
+            <i class="fa-solid fa-paper-plane me-1"></i>Send Message
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main> <!-- Closing main tag -->
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable"> <!-- Made scrollable -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewModalLabel">Message Preview</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <strong>To:</strong> <span id="previewTo" class="text-muted"></span>
+        </div>
+        <div class="mb-3">
+          <strong>From:</strong> <span id="previewFrom" class="text-muted"></span>
+        </div>
+        <div class="mb-3">
+          <strong>Subject:</strong> <span id="previewSubject" class="text-muted"></span>
+        </div>
+        <hr>
+        <div id="previewBody" class="mb-3 text-muted"></div> <!-- Muted text -->
+        <hr>
+        <div id="previewSignature" class="mb-3 text-muted small"></div> <!-- Muted text, smaller -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-pencil me-1"></i>Edit</button>
+        <button type="button" class="btn btn-primary" id="previewSendBtn"><i class="fa-solid fa-paper-plane me-1"></i>Send Message</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-muted"> <!-- Muted text -->
+        <h6>How we use your data</h6>
+        <p>Your personal information is only used to:</p>
+        <ul>
+          <li>Forward your message, full name, email address, and physical address to your MP's office.</li> <!-- More specific -->
+          <li>Verify you are a constituent of the MP.</li>
+          <li>Send you a copy of your message (if requested).</li>
+        </ul>
+
+        <h6>We do not:</h6>
+        <ul>
+          <li>Store the content of your message or your personal details on our servers permanently.</li> <!-- Clearer -->
+          <li>Share your details with any third parties beyond your MP's office for the purpose of this message.</li> <!-- Clearer -->
+          <li>Use your information for marketing purposes.</li>
+        </ul>
+
+        <p>For more information on how your data is handled, please see our full <a href="#" target="_blank">privacy policy</a>.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I understand</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="successModalLabel">Message Sent Successfully</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <i class="fa-solid fa-circle-check text-success fa-4x mb-3"></i>
+          <h4 class="text-gray-900">Thank you!</h4>
+          <p class="text-muted">Your message has been successfully sent to your MP.</p> <!-- Clearer text -->
+        </div>
+
+        <div class="alert alert-info text-gray-900" role="alert"> <!-- Added role, text color -->
+          <h6><i class="fa-solid fa-info-circle me-2 text-info"></i>What happens next?</h6> <!-- Info icon colored -->
+          <p class="mb-0 small text-muted">MPs typically respond within 2-3 weeks. If you requested a copy, you'll receive it shortly via email.</p> <!-- Muted text, added email note -->
+        </div>
+
+        <h6 class="mt-4 mb-3 text-gray-900">Would you like to:</h6> <!-- More margin -->
+        <div class="d-grid gap-3"> <!-- Increased gap -->
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" id="writeAnotherBtn">
+            <i class="fa-solid fa-pen-to-square me-1"></i>Write another message
+          </button>
+          <button type="button" class="btn btn-outline-primary" id="shareFeedbackBtn">
+            <i class="fa-solid fa-comment me-1"></i>Share your feedback
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> <!-- Changed to secondary -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mb-4 mb-md-0"> <!-- More bottom margin -->
+        <h5 class="h6">Write to Your MP</h5>
+        <p class="small mb-0 text-gray-400">A Democracy Digital project making it easy for you to contact your elected representatives in the UK Parliament.</p> <!-- More descriptive -->
+      </div>
+      <div class="col-md-3 mb-4 mb-md-0"> <!-- More bottom margin -->
+        <h5 class="h6">Resources</h5>
+        <ul class="list-unstyled small">
+          <li><a href="#" class="text-gray-400">How it works</a></li>
+          <li><a href="#" class="text-gray-400">Effective advocacy</a></li>
+          <li><a href="#" class="text-gray-400">FAQs</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5 class="h6">Links</h5>
+        <ul class="list-unstyled small">
+          <li><a href="#" class="text-gray-400">Privacy Policy</a></li> <!-- Added Privacy Link -->
+          <li><a href="#" class="text-gray-400">Contact Us</a></li> <!-- Changed text -->
+        </ul>
+      </div>
+    </div>
+    <hr class="my-4 border-gray-700"> <!-- Separator -->
+    <div class="text-center small text-gray-500"> <!-- Muted text -->
+      © 2024 Democracy Digital. Built with <i class="fa-solid fa-heart text-danger"></i>.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const apiBase = 'https://members-api.parliament.uk/api';
+
+  // --- DOM Elements ---
+  const postcodeInput = document.getElementById('postcodeInput');
+  const findBtn = document.getElementById('findBtn');
+  const constituencyLabel = document.getElementById('constituencyLabel');
+  const mpPlaceholder = document.getElementById('mpPlaceholder');
+
+  // MP Card Elements
+  const mpCard = document.getElementById('mpCard');
+  const mpImg = document.getElementById('mpImg');
+  const mpName = document.getElementById('mpName');
+  const mpParty = document.getElementById('mpParty');
+  const mpConstituency = document.getElementById('mpConstituency'); // Added element
+  const mpSince = document.getElementById('mpSince');
+  const mpEmail = document.getElementById('mpEmail'); // Hidden element for data
+  const mpPhone = document.getElementById('mpPhone'); // Hidden element for data
+  const mpContactDetails = document.getElementById('mpContactDetails');
+  const votingRecordSection = document.getElementById('votingRecordSection'); // Added
+  const mpLinksSection = document.getElementById('mpLinksSection'); // Added
+  const votingLink = document.getElementById('votingLink');
+  const websiteLink = document.getElementById('websiteLink');
+
+  // Form Elements
+  const draftForm = document.getElementById('draftForm');
+  const mpWarning = document.getElementById('mpWarning');
+  const fullNameInput = document.getElementById('fullName');
+  const userEmailInput = document.getElementById('userEmail');
+  const userAddressInput = document.getElementById('userAddress');
+  const topicSelect = document.getElementById('topicSelect');
+  const topicBadges = document.getElementById('topicBadges'); // Added
+  const emailSubjectInput = document.getElementById('emailSubject');
+  const emailBodyTextarea = document.getElementById('emailBody');
+  const charCountSpan = document.getElementById('charCount');
+  const templateBtn = document.getElementById('templateBtn');
+  const copyMeCheckbox = document.getElementById('copyMe');
+  const privacyConsentCheckbox = document.getElementById('privacyConsent');
+  const previewBtn = document.getElementById('previewBtn');
+  const sendBtn = document.getElementById('sendBtn');
+
+  // Progress Bar Elements
+  const progressBar = document.getElementById('progressBar');
+  const progressSteps = document.querySelectorAll('.progress-step');
+
+  // Modal Elements
+  const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+  const previewToSpan = document.getElementById('previewTo');
+  const previewFromSpan = document.getElementById('previewFrom');
+  const previewSubjectSpan = document.getElementById('previewSubject');
+  const previewBodyDiv = document.getElementById('previewBody');
+  const previewSignatureDiv = document.getElementById('previewSignature');
+  const previewSendBtn = document.getElementById('previewSendBtn');
+
+  const privacyModal = new bootstrap.Modal(document.getElementById('privacyModal')); // Initialized modal
+  const successModal = new bootstrap.Modal(document.getElementById('successModal')); // Initialized modal
+  const writeAnotherBtn = document.getElementById('writeAnotherBtn'); // Added
+  const shareFeedbackBtn = document.getElementById('shareFeedbackBtn'); // Added
+
+  // Settings Dropdown Elements
+  const contrastBtn = document.getElementById('contrastBtn');
+  const fontSizeBtn = document.getElementById('fontSizeBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  // Other Elements
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const toastContainer = document.querySelector('.toast-container');
+  const addressTooltipTrigger = document.querySelector('.address-tooltip'); // Added tooltip trigger
+
+  // --- State Variables ---
+  let currentMP = null;
+  let currentStep = 1;
+  const maxCharCount = 2000; // Defined max characters
+
+  // Add after the declaration of other DOM elements in the JavaScript section
+  const postcodeSuggestions = document.getElementById('postcodeSuggestions');
+  const postcodeError = document.getElementById('postcodeError');
+
+  // --- Helper Functions ---
+
+  // Show/Hide Loading
+  function showLoadingOverlay() { loadingOverlay.classList.remove('d-none'); }
+  function hideLoadingOverlay() { loadingOverlay.classList.add('d-none'); }
+
+  // Show Toast Notifications
+  function showToast(message, type = 'info') {
+      const toastHtml = `
+          <div class="toast align-items-center text-bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex">
+                  <div class="toast-body">
+                      ${message}
+                  </div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+          </div>
+      `;
+      const toastElement = document.createElement('div');
+      toastElement.innerHTML = toastHtml;
+      toastContainer.appendChild(toastElement.firstElementChild);
+      const toast = new bootstrap.Toast(toastContainer.lastElementChild);
+      toast.show();
+  }
+
+  // Update Progress Bar and Steps
+  function updateProgress(step) {
+      currentStep = step;
+      const progress = (step - 1) * 50; // 0% for step 1, 50% for step 2, 100% for step 3
+      if (progressBar) {
+        progressBar.style.width = `${progress}%`;
+        progressBar.setAttribute('aria-valuenow', progress);
+      }
+
+      progressSteps.forEach(stepEl => {
+          const stepNumber = parseInt(stepEl.dataset.step);
+          stepEl.classList.remove('active', 'completed');
+          if (stepNumber === step) {
+              stepEl.classList.add('active');
+          } else if (stepNumber < step) {
+              stepEl.classList.add('completed');
+          }
+      });
+  }
+
+    // Update Send Button State
+    function updateSendButtonState() {
+        const isFormValid = draftForm.checkValidity();
+        sendBtn.disabled = !currentMP || !isFormValid;
+        previewBtn.disabled = !currentMP || !isFormValid; // Also disable preview if form invalid
+    }
+
+  // Reset Form and MP State
+  function resetForm() {
+    draftForm.reset();
+    showMPCard(false);
+    currentMP = null;
+    constituencyLabel.textContent = '';
+    postcodeInput.value = '';
+    mpContactDetails.innerHTML = '';
+    if (votingRecordSection) votingRecordSection.classList.add('d-none');
+    if (mpLinksSection) mpLinksSection.classList.add('d-none');
+    updateProgress(1);
+    updateSendButtonState();
+    updateCharCount(); // Reset character count
+    if (mpWarning) mpWarning.classList.remove('d-none'); // Show warning again
+    document.body.classList.remove('larger-text'); // Reset font size if toggled
+  }
+
+  // Show/Hide MP Card & Placeholder
+  function showMPCard(show) {
+    if (mpCard) mpCard.classList.toggle('d-none', !show);
+    if (mpPlaceholder) mpPlaceholder.classList.toggle('d-none', show);
+    if (mpWarning) mpWarning.classList.toggle('d-none', show); // Hide warning when MP card is shown
+    updateSendButtonState(); // Update button state when MP card visibility changes
+  }
+
+  // Handle MP Lookup
+  async function findMP(postcode) {
+    if (!postcode || !postcode.trim()) {
+      constituencyLabel.textContent = 'Please enter a postcode.';
+      showMPCard(false); // Ensure placeholder is shown
+      return;
+    }
+
+    showLoadingOverlay();
+    constituencyLabel.textContent = 'Looking up MP...';
+    showMPCard(false); // Hide existing card and show placeholder immediately
+
+    try {
+      // 1. Find Constituency and Member ID
+      const searchRes = await fetch(`${apiBase}/Members/Search?Location=${encodeURIComponent(postcode)}&House=1&IsEligible=true&IsCurrentMember=true&skip=0&take=1`);
+      if (!searchRes.ok) { // Check for HTTP errors
+           throw new Error(`HTTP error! status: ${searchRes.status}`);
+      }
+      const searchData = await searchRes.json();
+
+      if (!searchData || !searchData.items || !searchData.items.length) {
+        constituencyLabel.textContent = `No current MP found for postcode: ${postcode.trim().toUpperCase()}. Please double-check.`;
+        hideLoadingOverlay();
+        showToast(`No MP found for ${postcode.trim().toUpperCase()}. Please check the postcode.`, 'warning');
+        return;
+      }
+      const mp = searchData.items[0].value;
+      currentMP = mp; // Store current MP data
+
+      // 2. Fetch Contact Info
+      const contactRes = await fetch(`${apiBase}/Members/${mp.id}/Contact`);
+       if (!contactRes.ok) {
+           throw new Error(`HTTP error fetching contact info! status: ${contactRes.status}`);
+       }
+      const contactData = await contactRes.json();
+      const contacts = Array.isArray(contactData.value) ? contactData.value : [];
+      console.log('MP Contact Info:', contacts);
+
+
+      // 3. Display MP Info & Contacts
+      if (mpName) mpName.textContent = mp.nameDisplayAs || 'Your MP';
+
+      if (mpParty) {
+        mpParty.textContent = mp.latestParty?.name || 'Unknown Party';
+        const partyClass = mp.latestParty?.abbreviation ? 'party-' + mp.latestParty.abbreviation.toLowerCase() : 'party-other';
+        mpParty.className = `badge mb-2 ${partyClass}`; // Update class
+      }
+
+      if (mpConstituency && mp.latestHouseMembership?.membershipFrom) {
+        mpConstituency.textContent = mp.latestHouseMembership.membershipFrom;
+        constituencyLabel.textContent = `Constituency: ${mp.latestHouseMembership.membershipFrom}`; // Display constituency in header
+      } else if (mpConstituency) {
+         mpConstituency.textContent = '';
+         constituencyLabel.textContent = ''; // Clear header label if no constituency found
+      }
+
+      if (mpSince && mp.latestHouseMembership?.membershipStartDate) {
+        mpSince.textContent = `MP since ${mp.latestHouseMembership.membershipStartDate.slice(0,4)}`;
+      } else if (mpSince) {
+        mpSince.textContent = '';
+      }
+
+      if (mpImg) {
+        mpImg.src = mp.thumbnailUrl || 'https://www.parliament.uk/static-image-placeholder.jpg';
+        mpImg.alt = `Photo of ${mp.nameDisplayAs || 'MP'}`;
+      }
+
+      // Build Contact Details HTML dynamically
+      let contactHtml = '';
+      constituencyLabel.textContent += ` (${mp.nameDisplayAs || 'Your MP'})`; // Add MP name to header label
+
+      // Filter and group contacts by type
+      const parliamentaryOffice = contacts.find(c => c.type === 'Parliamentary office');
+      const constituencyOffice = contacts.find(c => c.type === 'Constituency office');
+      const webContacts = contacts.filter(c => ['Website', 'X (formerly Twitter)', 'Facebook', 'Instagram'].includes(c.type));
+
+      // Add Parliamentary Office
+      if (parliamentaryOffice && (parliamentaryOffice.line1 || parliamentaryOffice.phone || parliamentaryOffice.email)) {
+         contactHtml += `<div class="contact-section">
+             <div class="contact-item">
+               <div class="icon-text">
+                 <i class="fa-solid fa-building text-primary"></i>
+                 <h6>Parliamentary Office</h6>
+               </div>
+             </div>`;
+         if (parliamentaryOffice.line1) contactHtml += `<div class="contact-item">
+             <div class="icon-text">
+               <i class="fa-solid fa-location-dot"></i>
+               <span>${[parliamentaryOffice.line1, parliamentaryOffice.line2, parliamentaryOffice.line3, parliamentaryOffice.line4, parliamentaryOffice.line5, parliamentaryOffice.postcode].filter(Boolean).join(', ')}</span>
+             </div>
+           </div>`;
+         if (parliamentaryOffice.phone) contactHtml += `<div class="contact-item">
+             <div class="icon-text">
+               <i class="fa-solid fa-phone"></i>
+               <a href="tel:${parliamentaryOffice.phone.replace(/\s/g,'')}">${parliamentaryOffice.phone}</a>
+             </div>
+           </div>`;
+         if (parliamentaryOffice.email) {
+             mpEmail.textContent = parliamentaryOffice.email; // Store email for mailto later
+             contactHtml += `<div class="contact-item">
+               <div class="icon-text">
+                 <i class="fa-solid fa-envelope"></i>
+                 <a href="mailto:${parliamentaryOffice.email}">${parliamentaryOffice.email}</a>
+               </div>
+             </div>`;
+         }
+         contactHtml += `</div>`;
+      } else {
+          // Fallback if no specific office listed but a general MP email is available
+           const generalEmail = contacts.find(c => c.type === 'Email')?.line1;
+           if(generalEmail) {
+                mpEmail.textContent = generalEmail; // Store general email
+                contactHtml += `<div class="contact-section">
+                    <div class="contact-item">
+                      <div class="icon-text">
+                        <i class="fa-solid fa-envelope text-primary"></i>
+                        <h6>Primary Contact Email</h6>
+                      </div>
+                    </div>
+                    <div class="contact-item">
+                      <div class="icon-text">
+                        <i class="fa-solid fa-envelope"></i>
+                        <a href="mailto:${generalEmail}">${generalEmail}</a>
+                      </div>
+                    </div>
+                    </div>`;
+           }
+      }
+
+      // Add Constituency Office
+      if (constituencyOffice && (constituencyOffice.line1 || constituencyOffice.phone || constituencyOffice.email)) {
+         contactHtml += `<div class="contact-section">
+             <div class="contact-item">
+               <div class="icon-text">
+                 <i class="fa-solid fa-map-marker-alt text-success"></i>
+                 <h6>Constituency Office</h6>
+               </div>
+             </div>`;
+         if (constituencyOffice.line1) contactHtml += `<div class="contact-item">
+             <div class="icon-text">
+               <i class="fa-solid fa-location-dot"></i>
+               <span>${[constituencyOffice.line1, constituencyOffice.line2, constituencyOffice.line3, constituencyOffice.line4, constituencyOffice.line5, constituencyOffice.postcode].filter(Boolean).join(', ')}</span>
+             </div>
+           </div>`;
+         if (constituencyOffice.phone) contactHtml += `<div class="contact-item">
+             <div class="icon-text">
+               <i class="fa-solid fa-phone"></i>
+               <a href="tel:${constituencyOffice.phone.replace(/\s/g,'')}">${constituencyOffice.phone}</a>
+             </div>
+           </div>`;
+         if (constituencyOffice.email) contactHtml += `<div class="contact-item">
+             <div class="icon-text">
+               <i class="fa-solid fa-envelope"></i>
+               <a href="mailto:${constituencyOffice.email}">${constituencyOffice.email}</a>
+             </div>
+           </div>`;
+         contactHtml += `</div>`;
+      }
+
+      // Add Social/Web Links section if any exist
+      if (webContacts.length > 0) {
+          let socialHtml = `<div class="social-links">`;
+          webContacts.forEach(contact => {
+              let icon = 'fa-globe'; // Default icon
+              let text = contact.type;
+              if (contact.type === 'X (formerly Twitter)') { icon = 'fa-x-twitter'; text = 'Twitter/X'; }
+              else if (contact.type === 'Facebook') { icon = 'fa-facebook-f'; } // Using -f for solid icon
+              else if (contact.type === 'Instagram') { icon = 'fa-instagram'; }
+
+              // Ensure URL has a protocol
+              let url = contact.line1;
+               if (url && !/^[a-zA-Z]+:\/\//i.test(url)) {
+                   url = 'http://' + url;
+               }
+
+              if (url) {
+                 socialHtml += `<a href="${url}" target="_blank" rel="noopener noreferrer"><i class="fab ${icon}"></i>${text}</a>`;
+              }
+          });
+          socialHtml += `</div>`;
+          contactHtml += socialHtml;
+      }
+
+      mpContactDetails.innerHTML = contactHtml;
+
+      // Show voting record & links section (if they have data, currently static)
+      if (votingRecordSection) votingRecordSection.classList.remove('d-none');
+      if (mpLinksSection) mpLinksSection.classList.remove('d-none');
+
+
+      if (votingLink && mp.id) {
+        votingLink.href = `https://members.parliament.uk/member/${mp.id}/voting`;
+      }
+
+      // Set main website link (prefer explicit 'Website' type, otherwise parliament profile)
+      const website = contacts.find(c => c.type === 'Website')?.line1;
+      if (websiteLink) {
+           // Ensure URL has a protocol
+           let websiteUrl = website;
+            if (websiteUrl && !/^[a-zA-Z]+:\/\//i.test(websiteUrl)) {
+                websiteUrl = 'http://' + websiteUrl;
+            }
+           websiteLink.href = websiteUrl || (mp.id ? `https://members.parliament.uk/member/${mp.id}` : '#');
+           websiteLink.classList.toggle('d-none', !websiteUrl && !mp.id); // Hide if no link available
+      }
+
+
+      showMPCard(true); // Show the populated card
+      hideLoadingOverlay();
+      updateProgress(2); // Move to Draft step
+      showToast(`MP found: ${mp.nameDisplayAs || 'Your MP'}`, 'success');
+
+    } catch (e) {
+      console.error('Error finding MP:', e);
+      constituencyLabel.textContent = `Error: Could not find MP for postcode. Please try again.`;
+      hideLoadingOverlay();
+      showMPCard(false); // Ensure placeholder is shown on error
+      showToast('Error finding MP. Please try again.', 'danger');
+    }
+  }
+
+  // --- Event Listeners ---
+
+  // Find MP Button/Enter Key (original handlers - no longer needed)
+  /* 
+  if (findBtn) {
+    findBtn.addEventListener('click', () => {
+      findMP(postcodeInput.value.trim());
+    });
+  }
+
+  if (postcodeInput) {
+    postcodeInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        findMP(postcodeInput.value.trim());
+      }
+    });
+  }
+  */
+
+  // Character Count for Textarea
+  if (emailBodyTextarea) {
+    emailBodyTextarea.addEventListener('input', updateCharCount);
+    updateCharCount(); // Initial count
+  }
+
+  function updateCharCount() {
+    if (!emailBodyTextarea || !charCountSpan) return;
+    const count = emailBodyTextarea.value.length;
+    charCountSpan.textContent = `${count} / ${maxCharCount}`;
+    if (count > maxCharCount) {
+      charCountSpan.classList.add('warning');
+      emailBodyTextarea.classList.add('is-invalid'); // Optional: Add invalid state
+    } else {
+      charCountSpan.classList.remove('warning');
+      emailBodyTextarea.classList.remove('is-invalid');
+    }
+    updateSendButtonState(); // Update state whenever text changes
+  }
+
+  // Topic Badge Click
+    if(topicBadges) {
+        topicBadges.addEventListener('click', (e) => {
+            if (e.target.classList.contains('topic-badge')) {
+                const topicText = e.target.textContent.trim();
+                // Simple logic: If subject is empty, add topic. Else, append.
+                if (!emailSubjectInput.value.trim()) {
+                    emailSubjectInput.value = topicText;
+                } else if (!emailSubjectInput.value.includes(topicText)) {
+                     emailSubjectInput.value += ` - ${topicText}`;
+                }
+                // Maybe add to body too? Or provide a simple template?
+                // For now, just update subject.
+                emailSubjectInput.focus(); // Focus subject field
+                updateSendButtonState();
+            }
+        });
+    }
+
+  // Use Template Button (Placeholder)
+  if (templateBtn) {
+    templateBtn.addEventListener('click', () => {
+        if (!currentMP) {
+            showToast("Please find your MP first.", "info");
+            return;
+        }
+        const mpLastName = currentMP.nameDisplayAs.split(' ').pop();
+        const constituencyName = currentMP.latestHouseMembership?.membershipFrom || 'my constituency';
+
+        const templateSubject = `Regarding [Your Topic] in ${constituencyName}`;
+        const templateBody = `Dear Mr/Ms/Dr ${mpLastName},\n\n` +
+                             `I am writing to you as a constituent in ${constituencyName} regarding [Your Topic].\n\n` +
+                             `[Explain briefly why this issue is important to you. Share your personal story or experience if relevant. Be specific about the problem.]\n\n` +
+                             `[State clearly what action you would like your MP to take. E.g., "I urge you to support the upcoming bill...", "Could you please ask a question in Parliament about...", "Would you be able to meet with me/a constituent group..."]\n\n` +
+                             `Thank you for your time and consideration of this important matter.\n\n` +
+                             `Yours sincerely,\n\n` +
+                             `[Your Full Name]\n[Your Full Address & Postcode]`;
+
+        emailSubjectInput.value = templateSubject;
+        emailBodyTextarea.value = templateBody;
+        updateCharCount(); // Update count after filling template
+        updateSendButtonState();
+        showToast("Template loaded into message body.", "info");
+    });
+  }
+
+  // Form Validation (using Bootstrap's built-in validation)
+  if (draftForm) {
+      draftForm.addEventListener('input', updateSendButtonState); // Check validity on input
+      privacyConsentCheckbox.addEventListener('change', updateSendButtonState); // Check validity when privacy consent changes
+
+      // Prevent default form submission for now, handle via preview/send buttons
+      draftForm.addEventListener('submit', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          if (!currentMP) {
+             showToast("Please find your MP before sending.", "warning");
+             if (mpWarning) mpWarning.classList.remove('d-none');
+             return;
+          }
+
+          if (draftForm.checkValidity() === false || emailBodyTextarea.value.length > maxCharCount) {
+              showToast("Please fill out all required fields and check message length.", "warning");
+              draftForm.classList.add('was-validated'); // Show validation feedback
+              return;
+          }
+
+          // If validation passes, proceed to Preview (or direct send if no preview)
+          // This structure implies preview is required before sending.
+          // If you want direct send, move the sending logic here.
+          // As per HTML structure, we go to preview first.
+          populatePreviewModal();
+          previewModal.show();
+      });
+  }
+
+
+  // Populate & Show Preview Modal
+  if (previewBtn) {
+      previewBtn.addEventListener('click', () => {
+           if (!currentMP) {
+              showToast("Please find your MP first.", "info");
+              return;
+           }
+           if (draftForm.checkValidity() === false || emailBodyTextarea.value.length > maxCharCount) {
+              showToast("Please fill out all required fields and check message length.", "warning");
+              draftForm.classList.add('was-validated');
+              return;
+          }
+          populatePreviewModal();
+          previewModal.show();
+      });
+  }
+
+  function populatePreviewModal() {
+      if (!currentMP || !previewToSpan || !previewFromSpan || !previewSubjectSpan || !previewBodyDiv || !previewSignatureDiv) return;
+
+      const mpEmailAddress = mpEmail.textContent.trim();
+      const userName = fullNameInput.value.trim();
+      const userEmail = userEmailInput.value.trim();
+      const userAddress = userAddressInput.value.trim().replace(/\n/g, '<br>'); // Format address for display
+      const subject = emailSubjectInput.value.trim();
+      const body = emailBodyTextarea.value.trim().replace(/\n/g, '<br>'); // Format body for display
+
+      previewToSpan.textContent = `${currentMP.nameDisplayAs || 'Your MP'} <${mpEmailAddress}>`;
+      previewFromSpan.textContent = `${userName} <${userEmail}>`;
+      previewSubjectSpan.textContent = subject;
+      previewBodyDiv.innerHTML = body;
+      previewSignatureDiv.innerHTML = `${userName}<br>${userAddress}`; // Signature includes name and address
+
+      // Enable send button in modal
+      previewSendBtn.disabled = !mpEmailAddress || !userName || !userEmail || !subject || !body;
+  }
+
+
+  // Send Message Button (Modal)
+  if (previewSendBtn) {
+      previewSendBtn.addEventListener('click', () => {
+          // In a real application, you would send this data to your backend
+          // which would then send the email. Using mailto: is not reliable
+          // for sensitive data or message length. This is a placeholder.
+
+          if (!currentMP || !mpEmail.textContent.trim()) {
+              showToast("Error: MP email not found.", "danger");
+              previewModal.hide();
+              return;
+          }
+
+          const mpEmailAddress = mpEmail.textContent.trim();
+          const userName = fullNameInput.value.trim();
+          const userEmail = userEmailInput.value.trim(); // Included in 'From' via backend ideally
+          const userAddress = userAddressInput.value.trim();
+          const subject = emailSubjectInput.value.trim();
+          const body = emailBodyTextarea.value.trim();
+          const copyMe = copyMeCheckbox.checked;
+
+          // Prepare data to send to backend
+          const messageData = {
+              mpId: currentMP.id,
+              mpEmail: mpEmailAddress,
+              fullName: userName,
+              email: userEmail,
+              address: userAddress,
+              subject: subject,
+              body: body,
+              sendCopy: copyMe
+          };
+
+          showLoadingOverlay(); // Show loading while sending (simulated)
+          previewSendBtn.disabled = true; // Prevent double-click
+
+          // --- Simulate Sending ---
+          setTimeout(() => {
+              hideLoadingOverlay();
+              previewModal.hide();
+              successModal.show(); // Show success modal
+
+              // In a real app, replace this with a fetch() call to your backend
+              // fetch('/api/send-message', {
+              //     method: 'POST',
+              //     headers: { 'Content-Type': 'application/json' },
+              //     body: JSON.stringify(messageData)
+              // })
+              // .then(response => {
+              //     if (!response.ok) throw new Error('Failed to send message via API');
+              //     return response.json(); // Or response.text()
+              // })
+              // .then(data => {
+              //     hideLoadingOverlay();
+              //     previewModal.hide();
+              //     successModal.show();
+              //     updateProgress(3); // Move to Review/Sent step
+              //     // Optionally reset form here or on success modal close
+              // })
+              // .catch(error => {
+              //     console.error('Error sending message:', error);
+              //     hideLoadingOverlay();
+              //     showToast('Failed to send message. Please try again.', 'danger');
+              //     previewSendBtn.disabled = false; // Re-enable send button in modal
+              // });
+
+              updateProgress(3); // Move to Review/Sent step (assuming success simulation)
+
+          }, 1500); // Simulate network delay
+          // --- End Simulation ---
+      });
+  }
+
+    // Success Modal Buttons
+    if (writeAnotherBtn) {
+        writeAnotherBtn.addEventListener('click', () => {
+            resetForm(); // Reset the form for a new message
+            successModal.hide();
+        });
+    }
+    if (shareFeedbackBtn) {
+        shareFeedbackBtn.addEventListener('click', () => {
+            // Placeholder for feedback link/modal
+            alert("Share Feedback button clicked!"); // Replace with actual feedback mechanism
+        });
+    }
+
+
+  // --- Settings Dropdown ---
+
+  // High Contrast Mode
+  if (contrastBtn) {
+      contrastBtn.addEventListener('click', () => {
+          document.body.classList.toggle('contrast');
+          // Persist setting in localStorage
+          if (document.body.classList.contains('contrast')) {
+              localStorage.setItem('contrastMode', 'enabled');
+          } else {
+              localStorage.removeItem('contrastMode');
+          }
+      });
+      // Apply contrast mode on load if saved
+      if (localStorage.getItem('contrastMode') === 'enabled') {
+          document.body.classList.add('contrast');
+      }
+  }
+
+  // Larger Text
+  if (fontSizeBtn) {
+      fontSizeBtn.addEventListener('click', () => {
+          document.body.classList.toggle('larger-text');
+          // You would define styles for `.larger-text` in your CSS
+          // e.g., body.larger-text { font-size: 1.1rem; }
+          // Then adjust other font sizes relative to this.
+           // Persist setting in localStorage (Optional)
+          if (document.body.classList.contains('larger-text')) {
+              localStorage.setItem('largerText', 'enabled');
+          } else {
+              localStorage.removeItem('largerText');
+          }
+      });
+       // Apply larger text on load if saved
+      if (localStorage.getItem('largerText') === 'enabled') {
+          document.body.classList.add('larger-text');
+      }
+  }
+
+  // Reset Form
+  if (resetBtn) {
+      resetBtn.addEventListener('click', resetForm);
+  }
+
+
+    // --- Tooltips Initialization ---
+    // Initialize all tooltips on the page
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+    // --- Initial State Setup ---
+    showMPCard(false); // Start with placeholder visible
+    updateProgress(1); // Start at step 1
+    updateSendButtonState(); // Disable send button initially
+
+    // --- Optional: Auto-find MP if postcode is in URL or cookie ---
+    // You could add logic here to read a postcode from a query parameter
+    // or a cookie and automatically trigger findMP on page load.
+
+  // Add postcode typeahead and validation functionality
+  if (postcodeInput) {
+    let typingTimer;
+    const doneTypingInterval = 500; // ms delay before API call
+
+    postcodeInput.addEventListener('input', function() {
+      clearTimeout(typingTimer);
+      const postcode = this.value.trim().toUpperCase();
+      
+      // Clear previous error message
+      postcodeError.textContent = '';
+      
+      // Only proceed if we have at least 2 characters
+      if (postcode.length >= 2) {
+        typingTimer = setTimeout(() => {
+          // Validate and suggest postcodes via postcodes.io API
+          getPostcodeSuggestions(postcode);
+        }, doneTypingInterval);
+      } else {
+        // Clear suggestions if input too short
+        postcodeSuggestions.innerHTML = '';
+      }
+    });
+  }
+
+  // Function to get postcode suggestions from postcodes.io
+  async function getPostcodeSuggestions(partialPostcode) {
+    try {
+      // First try to validate if it's a complete postcode
+      const validateUrl = `https://api.postcodes.io/postcodes/${encodeURIComponent(partialPostcode)}/validate`;
+      const validateResponse = await fetch(validateUrl);
+      const validateData = await validateResponse.json();
+      
+      if (validateData.status === 200 && validateData.result) {
+        // It's a valid postcode, no need for further suggestions
+        postcodeSuggestions.innerHTML = '';
+        postcodeError.textContent = '✓ Valid postcode';
+        postcodeError.className = 'd-block mt-1 text-success fw-medium';
+        return;
+      }
+      
+      // If it's not a complete valid postcode, get suggestions
+      const url = `https://api.postcodes.io/postcodes/${encodeURIComponent(partialPostcode)}/autocomplete`;
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      // Clear previous suggestions
+      postcodeSuggestions.innerHTML = '';
+      
+      if (data.status === 200 && data.result && data.result.length > 0) {
+        // Add each suggestion to the datalist
+        data.result.forEach(suggestion => {
+          const option = document.createElement('option');
+          option.value = suggestion;
+          postcodeSuggestions.appendChild(option);
+        });
+        postcodeError.textContent = '';
+      } else if (partialPostcode.length >= 3) {
+        // Only show not found message if user entered enough characters
+        postcodeError.textContent = 'No matching postcodes found';
+        postcodeError.className = 'd-block mt-1 text-warning fw-medium';
+      }
+    } catch (error) {
+      console.error('Error getting postcode suggestions:', error);
+    }
+  }
+
+  // Validate postcode before search
+  if (findBtn) {
+    findBtn.addEventListener('click', () => {
+      const postcode = postcodeInput.value.trim();
+      validateAndFindMP(postcode);
+    });
+  }
+
+  if (postcodeInput) {
+    postcodeInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const postcode = postcodeInput.value.trim();
+        validateAndFindMP(postcode);
+      }
+    });
+  }
+
+  // Function to validate postcode and then find MP
+  async function validateAndFindMP(postcode) {
+    if (!postcode) {
+      constituencyLabel.textContent = 'Please enter a postcode.';
+      return;
+    }
+    
+    // Show loading state
+    showLoadingOverlay();
+    constituencyLabel.textContent = 'Validating postcode...';
+    
+    try {
+      // First validate the postcode with postcodes.io
+      const validateUrl = `https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}/validate`;
+      const validateResponse = await fetch(validateUrl);
+      const validateData = await validateResponse.json();
+      
+      if (validateData.status === 200 && validateData.result) {
+        // Valid postcode, proceed to find MP
+        constituencyLabel.textContent = 'Looking up MP...';
+        findMP(postcode);
+      } else {
+        // Invalid postcode
+        hideLoadingOverlay();
+        constituencyLabel.textContent = '';
+        postcodeError.textContent = 'Please enter a valid UK postcode';
+        postcodeError.className = 'd-block mt-1 text-warning fw-medium';
+        showMPCard(false);
+      }
+    } catch (error) {
+      console.error('Error validating postcode:', error);
+      hideLoadingOverlay();
+      constituencyLabel.textContent = 'Error validating postcode. Please try again.';
+      showMPCard(false);
+    }
+  }
+
+  // Add address lookup DOM elements
+  const findAddressBtn = document.getElementById('findAddressBtn');
+  const addressLookupContainer = document.getElementById('addressLookupContainer');
+  const addressDropdown = document.getElementById('addressDropdown');
+  const addressLookupStatus = document.getElementById('addressLookupStatus');
+  // userAddressInput is already defined earlier in the code
+
+  // Initialize address lookup functionality
+  if (findAddressBtn) {
+    findAddressBtn.addEventListener('click', async () => {
+      // Get postcode from input
+      const postcode = postcodeInput.value.trim().toUpperCase();
+      
+      if (!postcode) {
+        showToast('Please enter a postcode first', 'warning');
+        postcodeInput.focus();
+        return;
+      }
+      
+      // Show loading status
+      addressLookupStatus.textContent = 'Looking up addresses...';
+      addressLookupStatus.className = 'form-text mt-1 text-muted';
+      addressLookupContainer.classList.remove('d-none');
+      findAddressBtn.disabled = true;
+      
+      try {
+        // First validate the postcode
+        const isValid = await validatePostcode(postcode);
+        
+        if (!isValid) {
+          addressLookupStatus.textContent = 'Invalid postcode. Please enter a valid UK postcode.';
+          addressLookupStatus.className = 'form-text mt-1 text-danger';
+          findAddressBtn.disabled = false;
+          return;
+        }
+        
+        // Fetch addresses for this postcode
+        // Note: In a real implementation, you would use a commercial address lookup API
+        // such as getAddress.io, Ideal Postcodes, or Royal Mail's API
+        const addresses = await getAddressesFromPostcode(postcode);
+        
+        // Clear any existing options except the first one
+        addressDropdown.innerHTML = '<option value="" selected>Select your address...</option>';
+        
+        if (addresses && addresses.length > 0) {
+          // Add each address as an option
+          addresses.forEach((address, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = address.formatted;
+            addressDropdown.appendChild(option);
+          });
+          
+          addressLookupStatus.textContent = `${addresses.length} addresses found`;
+          addressLookupStatus.className = 'form-text mt-1 text-success';
+        } else {
+          addressLookupStatus.textContent = 'No addresses found for this postcode. Please enter manually.';
+          addressLookupStatus.className = 'form-text mt-1 text-warning';
+        }
+      } catch (error) {
+        console.error('Error looking up addresses:', error);
+        addressLookupStatus.textContent = 'Error looking up addresses. Please try again or enter manually.';
+        addressLookupStatus.className = 'form-text mt-1 text-danger';
+      } finally {
+        findAddressBtn.disabled = false;
+      }
+    });
+  }
+
+  // Handle address selection
+  if (addressDropdown) {
+    addressDropdown.addEventListener('change', function() {
+      const selectedIndex = this.value;
+      
+      if (selectedIndex === '') {
+        // Nothing selected
+        return;
+      }
+      
+      try {
+        // Get selected address (in a real implementation this would reference the actual address data)
+        const addresses = addressCache[postcodeInput.value.trim().toUpperCase()];
+        const selectedAddress = addresses[selectedIndex];
+        
+        // Format the address for the textarea
+        const formattedAddress = formatAddressForTextarea(selectedAddress);
+        
+        // Update the address textarea
+        userAddressInput.value = formattedAddress;
+        
+        // Show success message
+        addressLookupStatus.textContent = 'Address selected!';
+        addressLookupStatus.className = 'form-text mt-1 text-success';
+        
+        // Optionally hide the dropdown after selection
+        // addressLookupContainer.classList.add('d-none');
+      } catch (error) {
+        console.error('Error selecting address:', error);
+        addressLookupStatus.textContent = 'Error applying selected address. Please enter manually.';
+        addressLookupStatus.className = 'form-text mt-1 text-danger';
+      }
+    });
+  }
+
+  // Helper function to validate a postcode using postcodes.io
+  async function validatePostcode(postcode) {
+    try {
+      const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}/validate`);
+      const data = await response.json();
+      return data.status === 200 && data.result === true;
+    } catch (error) {
+      console.error('Error validating postcode:', error);
+      return false;
+    }
+  }
+
+  // Cache for address lookups to avoid redundant API calls
+  const addressCache = {};
+
+  // Function to get addresses from a postcode
+  // Using OS Places API - requires API key from Ordnance Survey
+  // https://www.api.gov.uk/os/os-places-api/
+  async function getAddressesFromPostcode(postcode) {
+    // Check if we already have addresses for this postcode in cache
+    if (addressCache[postcode]) {
+      return addressCache[postcode];
+    }
+    
+    try {
+      // NOTE: In production, you would need to register for an API key from OS Data Hub
+      // This example uses a placeholder - replace with your actual key
+      const apiKey = 'YOUR_OS_PLACES_API_KEY';
+      const url = `https://api.os.uk/search/places/v1/postcode?postcode=${encodeURIComponent(postcode)}&key=${apiKey}`;
+      
+      // For demo purposes, we'll fall back to our mockup data
+      // REMOVE THIS BLOCK IN PRODUCTION AND UNCOMMENT THE FETCH BELOW
+      console.log('Using mock OS Places API response - in production, use actual API');
+      const addresses = await getMockAddressesForDemo(postcode);
+      addressCache[postcode] = addresses;
+      return addresses;
+      
+      /*
+      // UNCOMMENT THIS CODE IN PRODUCTION
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data.results || data.results.length === 0) {
+        return [];
+      }
+      
+      // OS Places API returns addresses in a specific format
+      // Transform them into our application's format
+      const addresses = data.results.map(result => {
+        const address = result.DPA || result.LPI || {};
+        
+        return {
+          uprn: address.UPRN,
+          building_number: address.BUILDING_NUMBER,
+          building_name: address.BUILDING_NAME,
+          sub_building_name: address.SUB_BUILDING_NAME,
+          thoroughfare: address.THOROUGHFARE_NAME,
+          dependent_thoroughfare: address.DEPENDENT_THOROUGHFARE_NAME,
+          locality: address.DEPENDENT_LOCALITY,
+          town_or_city: address.POST_TOWN,
+          county: address.COUNTY_UNITARY,
+          postcode: address.POSTCODE,
+          formatted: formatOSAddress(address)
+        };
+      });
+      
+      // Cache the addresses for this postcode
+      addressCache[postcode] = addresses;
+      
+      return addresses;
+      */
+    } catch (error) {
+      console.error('Error getting addresses from OS Places API:', error);
+      return [];
+    }
+  }
+
+  // Helper function to format OS Places address for display
+  function formatOSAddress(osAddress) {
+    const parts = [];
+    
+    if (osAddress.SUB_BUILDING_NAME) parts.push(osAddress.SUB_BUILDING_NAME);
+    if (osAddress.BUILDING_NAME) parts.push(osAddress.BUILDING_NAME);
+    
+    let numberStreet = '';
+    if (osAddress.BUILDING_NUMBER) numberStreet += osAddress.BUILDING_NUMBER + ' ';
+    if (osAddress.THOROUGHFARE_NAME) numberStreet += osAddress.THOROUGHFARE_NAME;
+    if (numberStreet) parts.push(numberStreet);
+    
+    if (osAddress.DEPENDENT_LOCALITY) parts.push(osAddress.DEPENDENT_LOCALITY);
+    if (osAddress.POST_TOWN) parts.push(osAddress.POST_TOWN);
+    if (osAddress.POSTCODE) parts.push(osAddress.POSTCODE);
+    
+    return parts.join(', ');
+  }
+
+  // Temporary mock function for demonstration purposes only
+  // This simulates OS Places API responses without requiring an API key
+  async function getMockAddressesForDemo(postcode) {
+    try {
+      // Get basic postcode data from postcodes.io to make our demo more realistic
+      const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}`);
+      const data = await response.json();
+      
+      if (data.status !== 200 || !data.result) {
+        return [];
+      }
+      
+      const postcodeData = data.result;
+      const town = postcodeData.admin_district || postcodeData.parish || 'Town';
+      const streetNames = ['High Street', 'Church Road', 'Main Street', 'Park Avenue', 'Station Road'];
+      
+      // Create mock OS Places API format addresses
+      return streetNames.map((street, index) => {
+        const buildingNumber = Math.floor(Math.random() * 100) + 1;
+        const uprn = (Math.floor(Math.random() * 90000000) + 10000000).toString(); // Mock UPRN
+        
+        return {
+          uprn: uprn,
+          building_number: buildingNumber.toString(),
+          building_name: index === 0 ? 'The Willows' : null,
+          sub_building_name: index === 1 ? 'Flat 2' : null,
+          thoroughfare: street,
+          town_or_city: town,
+          county: postcodeData.admin_county || postcodeData.admin_district,
+          postcode: postcodeData.postcode,
+          formatted: `${index === 1 ? 'Flat 2, ' : ''}${index === 0 ? 'The Willows, ' : ''}${buildingNumber} ${street}, ${town}, ${postcodeData.postcode}`
+        };
+      });
+    } catch (error) {
+      console.error('Error creating mock addresses:', error);
+      return [];
+    }
+  }
+
+  // Format address object into a string for the textarea
+  function formatAddressForTextarea(address) {
+    let lines = [];
+    
+    // Add sub-building name (like 'Flat 2') if present
+    if (address.sub_building_name) {
+      lines.push(address.sub_building_name);
+    }
+    
+    // Add building name if present
+    if (address.building_name) {
+      lines.push(address.building_name);
+    }
+    
+    // Add building number and street
+    let streetLine = '';
+    if (address.building_number) {
+      streetLine += address.building_number + ' ';
+    }
+    if (address.thoroughfare) {
+      streetLine += address.thoroughfare;
+    }
+    if (streetLine) {
+      lines.push(streetLine);
+    }
+    
+    // Add dependent thoroughfare if present
+    if (address.dependent_thoroughfare) {
+      lines.push(address.dependent_thoroughfare);
+    }
+    
+    // Add locality if present and different from town
+    if (address.locality && address.locality !== address.town_or_city) {
+      lines.push(address.locality);
+    }
+    
+    // Add town/city
+    if (address.town_or_city) {
+      lines.push(address.town_or_city);
+    }
+    
+    // Add county if present and different from town
+    if (address.county && address.county !== address.town_or_city) {
+      lines.push(address.county);
+    }
+    
+    // Add postcode
+    if (address.postcode) {
+      lines.push(address.postcode);
+    }
+    
+    return lines.join('\n');
+  }
+});
+</script>
+</body>
+</html>

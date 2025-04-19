@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Write to Your MP</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#2a5298">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <link rel="manifest" id="manifestLink">
+  <style>
+   :root{
+     scroll-behavior: smooth;
+     --primary-color: #1e40af;
+     --primary-dark: #1e3a8a;
+     --primary-light: #3b82f6;
+     --success-bg: rgba(25, 135, 84, 0.15);
+     --warning-bg: rgba(255, 193, 7, 0.15);
+     --info-bg: rgba(13, 202, 240, 0.15);
+     --gray-100: #f3f4f6;
+     --gray-200: #e5e7eb;
+     --gray-300: #d1d5db;
+     --gray-700: #374151;
+     --gray-900: #111827;
+     --border-radius: 0.75rem;
+     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+   }
+   
+   body{
+     background-color: #f8fafc;
+     transition: background-color 0.3s ease, color 0.3s ease;
+     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+     color: var(--gray-900);
+     line-height: 1.6;
+   }
+   
+   .hero{
+     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+     color: #fff;
+     padding: 3rem 0;
+     transition: background 0.3s ease;
+     box-shadow: var(--shadow);
+   }
+   
+   .mp-img{
+     width: 160px;
+     height: 160px;
+     object-fit: cover;
+     border-radius: 50%;
+     border: 5px solid #fff;
+     box-shadow: var(--shadow);
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+     margin-bottom: 1.5rem;
+   }
+   
+   .mp-img:hover {
+     transform: scale(1.05);
+     box-shadow: var(--shadow-lg);
+   }
+   
+   .topic-badge{
+     cursor: pointer;
+     transition: all 0.2s ease;
+     padding: 0.5rem 1rem;
+     border-radius: 50px;
+     font-weight: 500;
+   }
+   
+   .topic-badge:hover{
+     transform: translateY(-2px);
+     box-shadow: var(--shadow-sm);
+   }
+   
+   .progress{
+     height: 0.5rem;
+     border-radius: 1rem;
+     background-color: var(--gray-200);
+     overflow: hidden;
+   }
+   
+   .progress-bar {
+     background-color: var(--primary-color);
+     transition: width 0.6s ease;
+   }
+   
+   .progress-step{
+     flex: 1;
+     text-align: center;
+     font-size: 0.875rem;
+     position: relative;
+     transition: color 0.3s ease, font-weight 0.3s ease;
+     padding: 0.5rem 0;
+   }
+   
+   .progress-step.active {
+     color: var(--primary-color);
+     font-weight: 600;
+   }
+   
+   .card {
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+     border: none;
+     border-radius: var(--border-radius);
+     background-color: #fff;
+     overflow: hidden;
+     box-shadow: var(--shadow);
+   }
+   
+   .mp-card {
+     border-radius: var(--border-radius);
+     overflow: hidden;
+   }
+   
+   .mp-card:hover {
+     transform: translateY(-5px);
+     box-shadow: var(--shadow-lg) !important;
+   }
+   
+   .mp-card .card-body {
+     padding: 2rem 1.5rem 1.5rem;
+   }
+   
+   .mp-card .card-title {
+     font-weight: 700;
+     font-size: 2rem;
+     margin-bottom: 0.5rem;
+     color: var(--gray-900);
+   }
+   
+   /* Party badges */
+   .party-lab, .party-labour {
+     background-color: #E4003B;
+     color: white;
+     padding: 0.4rem 1.25rem;
+     border-radius: 50px;
+     font-weight: 600;
+     display: inline-block;
+     letter-spacing: 0.5px;
+     font-size: 0.9rem;
+   }
+   
+   .party-con, .party-conservative {
+     background-color: #0087DC;
+     color: white;
+     padding: 0.4rem 1.25rem;
+     border-radius: 50px;
+     font-weight: 600;
+     display: inline-block;
+     letter-spacing: 0.5px;
+     font-size: 0.9rem;
+   }
+   
+   .party-libdem, .party-ld {
+     background-color: #FAA61A;
+     color: white;
+     padding: 0.4rem 1.25rem;
+     border-radius: 50px;
+     font-weight: 600;
+     display: inline-block;
+     letter-spacing: 0.5px;
+     font-size: 0.9rem;
+   }
+   
+   .party-snp {
+     background-color: #FDF38E;
+     color: #333;
+     padding: 0.4rem 1.25rem;
+     border-radius: 50px;
+     font-weight: 600;
+     display: inline-block;
+     letter-spacing: 0.5px;
+     font-size: 0.9rem;
+   }
+   
+   .party-green {
+     background-color: #6AB023;
+     color: white;
+     padding: 0.4rem 1.25rem;
+     border-radius: 50px;
+     font-weight: 600;
+     display: inline-block;
+     letter-spacing: 0.5px;
+     font-size: 0.9rem;
+   }
+   
+   .party-plaidcymru {
+     background-color: #005B54;
+     color: white;
+     padding: 0.4rem 1.25rem;
+     border-radius: 50px;
+     font-weight: 600;
+     display: inline-block;
+     letter-spacing: 0.5px;
+     font-size: 0.9rem;
+   }
+   
+   .party-other {
+     background-color: #6c757d;
+     color: white;
+     padding: 0.4rem 1.25rem;
+     border-radius: 50px;
+     font-weight: 600;
+     display: inline-block;
+     letter-spacing: 0.5px;
+     font-size: 0.9rem;
+   }
+   
+   /* Contact details section */
+   #mpContactDetails {
+     background-color: var(--info-bg);
+     border-radius: 1rem;
+     padding: 1.5rem;
+     margin: 1rem 0;
+     border: 1px solid rgba(13, 202, 240, 0.2);
+     border-top: none;
+   }
+   
+   #mpContactDetails .contact-section {
+     padding: 0;
+     border-bottom: none;
+     margin: 0;
+     margin-bottom: 1.5rem;
+   }
+   
+   #mpContactDetails .contact-section:last-child {
+     margin-bottom: 0;
+   }
+   
+   #mpContactDetails .contact-section h6 {
+     font-weight: 600;
+     font-size: 1rem;
+     margin-bottom: 1rem;
+     color: var(--gray-900);
+     display: flex;
+     align-items: center;
+     padding-left: 0;
+   }
+   
+   #mpContactDetails .contact-section h6 i {
+     margin-right: 12px;
+     font-size: 1.1rem;
+     color: var(--primary-color);
+     padding: 0;
+     text-align: left;
+     background-color: transparent;
+     border-radius: 0;
+     width: auto;
+     height: auto;
+     font-weight: normal;
+   }
+   
+   .contact-item {
+     display: flex;
+     margin-bottom: 0.75rem;
+     align-items: center;
+     padding-left: 0;
+   }
+   
+   .contact-item:last-child {
+     margin-bottom: 0;
+   }
+   
+   .contact-item i {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     width: 28px;
+     height: 28px;
+     background-color: var(--primary-color);
+     color: white;
+     border-radius: 50%;
+     margin-right: 1rem;
+     font-size: 0.875rem;
+     font-weight: 600;
+     flex-shrink: 0;
+     text-align: center;
+     padding: 0;
+   }
+   
+   .contact-item span,
+   .contact-item a {
+     font-size: 0.95rem;
+     line-height: 1.4;
+     display: inline-block;
+     word-break: break-word;
+     hyphens: auto;
+   }
+   
+   .contact-item a {
+     color: var(--primary-color);
+     text-decoration: none;
+     font-weight: 500;
+     transition: color 0.2s ease;
+   }
+   
+   .contact-item a:hover {
+     color: var(--primary-dark);
+     text-decoration: underline;
+   }
+   
+   .social-links {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 0.75rem;
+     padding: 1rem 1.5rem 1.5rem;
+   }
+   
+   .social-links a {
+     flex: 1;
+     min-width: calc(50% - 0.75rem);
+     text-align: center;
+     padding: 0.6rem;
+     border-radius: 0.5rem;
+     font-size: 0.95rem;
+     background-color: var(--gray-100);
+     color: var(--gray-900);
+     font-weight: 500;
+     text-decoration: none;
+     transition: all 0.2s ease;
+     border: 1px solid var(--gray-200);
+   }
+   
+   .social-links a:hover {
+     transform: translateY(-2px);
+     box-shadow: var(--shadow-sm);
+     background-color: white;
+   }
+   
+   .social-links i {
+     margin-right: 0.5rem;
+     width: 16px;
+     text-align: center;
+   }
+   
+   /* Voting record section */
+   .voting-record {
+     background-color: #f8fafc;
+     border-top: 1px solid var(--gray-200);
+   }
+   
+   .voting-record h6 {
+     color: var(--gray-900);
+     font-size: 1rem;
+   }
+   
+   .tooltip-inner {
+     max-width: 300px;
+     padding: 0.75rem;
+     border-radius: 0.5rem;
+   }
+   
+   .writing-tips {
+     background-color: var(--info-bg);
+     border-radius: 1rem;
+     padding: 1.5rem;
+     margin-bottom: 2rem;
+     border: 1px solid rgba(13, 202, 240, 0.2);
+   }
+   
+   .tip-item {
+     margin-bottom: 0.75rem;
+     display: flex;
+     align-items: start;
+   }
+   
+   .tip-number {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     width: 28px;
+     height: 28px;
+     background-color: var(--primary-color);
+     color: white;
+     border-radius: 50%;
+     margin-right: 0.75rem;
+     font-size: 0.875rem;
+     font-weight: 600;
+     flex-shrink: 0;
+   }
+   
+   .address-tooltip {
+     cursor: help;
+   }
+   
+   .vote-bar {
+     height: 8px;
+     border-radius: 4px;
+     margin-bottom: 6px;
+     background-color: var(--gray-200);
+     overflow: hidden;
+   }
+   
+   .vote-for {
+     background-color: #10b981;
+   }
+   
+   .vote-against {
+     background-color: #ef4444;
+   }
+   
+   .vote-abstain {
+     background-color: #6b7280;
+   }
+   
+   .char-count {
+     text-align: right;
+     font-size: 0.75rem;
+     margin-top: 0.25rem;
+     color: #6c757d;
+   }
+   
+   .char-count.warning {
+     color: #dc3545;
+     font-weight: bold;
+   }
+   
+   .form-floating > label {
+     padding-left: 1rem;
+   }
+   
+   .form-floating > .form-control {
+     padding-left: 1rem;
+   }
+   
+   .form-control:focus, .form-select:focus {
+     border-color: var(--primary-light);
+     box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+   }
+   
+   .btn-primary {
+     background-color: var(--primary-color);
+     border-color: var(--primary-color);
+     font-weight: 500;
+   }
+   
+   .btn-primary:hover, .btn-primary:focus {
+     background-color: var(--primary-dark);
+     border-color: var(--primary-dark);
+   }
+   
+   .btn-light {
+     background-color: white;
+     border: 1px solid var(--gray-200);
+     color: var(--gray-700);
+     font-weight: 500;
+   }
+   
+   .btn-light:hover {
+     background-color: var(--gray-100);
+     color: var(--gray-900);
+   }
+   
+   .btn-outline-secondary {
+     border-color: var(--gray-300);
+     color: var(--gray-700);
+     font-weight: 500;
+   }
+   
+   .btn-outline-secondary:hover {
+     background-color: var(--gray-100);
+     border-color: var(--gray-300);
+     color: var(--gray-900);
+   }
+   
+   /* Dark/contrast mode enhancements */
+   .contrast body{
+     background: #000;
+     color: #fff;
+   }
+   
+   .contrast .card {
+     background: #1a1a1a;
+     color: #fff;
+     border-color: #333;
+   }
+   
+   .contrast .list-group-item {
+     background: #1a1a1a;
+     color: #fff;
+     border-color: #333;
+   }
+   
+   .contrast .btn-primary{
+     background-color: #4b5563;
+     color: #fff;
+     border-color: #4b5563;
+   }
+   
+   .contrast .btn-outline-secondary {
+     color: #fff;
+     border-color: #4b5563;
+   }
+   
+   .contrast .form-control, 
+   .contrast .form-select {
+     background-color: #333;
+     color: #fff;
+     border-color: #4b5563;
+   }
+   
+   .contrast .form-control::placeholder, 
+   .contrast .form-select::placeholder {
+     color: #9ca3af;
+   }
+   
+   .contrast .hero {
+     background: #333;
+   }
+   
+   .contrast .text-dark {
+     color: #fff !important;
+   }
+   
+   .contrast .bg-light {
+     background-color: #333 !important;
+   }
+   
+   .contrast .text-muted {
+     color: #d1d5db !important;
+   }
+   
+   .contrast footer {
+     background-color: #111;
+   }
+   
+   .loading-spinner {
+     width: 3rem;
+     height: 3rem;
+   }
+   
+   .loading-overlay {
+     position: fixed;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background-color: rgba(0,0,0,0.7);
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     z-index: 1050;
+     backdrop-filter: blur(4px);
+   }
+   
+   .toast-container {
+     position: fixed;
+     bottom: 1rem;
+     right: 1rem;
+     z-index: 1100;
+   }
+   
+   .dropdown-item-danger {
+     color: #ef4444;
+   }
+   
+   .dropdown-item-danger:hover, 
+   .dropdown-item-danger:focus {
+     color: #fff;
+     background-color: #ef4444;
+   }
+   
+   .dropdown-menu {
+     min-width: 200px;
+     border-radius: 0.5rem;
+     box-shadow: var(--shadow);
+     border: 1px solid var(--gray-200);
+     padding: 0.5rem;
+   }
+   
+   .dropdown-item {
+     padding: 0.5rem 1rem;
+     border-radius: 0.25rem;
+   }
+   
+   .writing-guidelines {
+     position: absolute;
+     right: 0;
+     top: 0;
+     z-index: 10;
+   }
+   
+   @media (max-width: 768px) {
+     .hero h1 {
+       font-size: 1.75rem;
+     }
+     .hero .lead {
+       font-size: 1rem;
+     }
+     .mp-img {
+       width: 140px;
+       height: 140px;
+     }
+     .mp-card .card-title {
+       font-size: 1.75rem;
+     }
+     .social-links a {
+       flex: 1 0 100%;
+     }
+   }
+   
+   .contact-icon {
+     display: inline-block;
+     width: 30px;
+     margin-right: 12px;
+     text-align: center;
+   }
+   
+   .office-icon {
+     margin-right: 16px;
+   }
+  </style>
+</head>
+<body>
+<!-- Loading spinner overlay -->
+<div id="loadingOverlay" class="loading-overlay d-none">
+  <div class="spinner-border text-light loading-spinner" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<!-- Notification toast container -->
+<div class="toast-container"></div>
+
+<nav class="hero">
+ <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+    <div>
+      <h1 class="display-5 fw-bold mb-1">Write to Your MP</h1>
+      <p class="lead mb-0">Type your postcode, draft &amp; send – it's that simple.</p>
+    </div>
+    <div class="mt-3 mt-md-0">
+      <div class="input-group">
+        <input id="postcodeInput" class="form-control" placeholder="Postcode (e.g. WS1 3BA)" autocomplete="postal-code">
+        <button id="findBtn" class="btn btn-light"><i class="fa-solid fa-search me-1"></i>Find my MP</button>
+      </div>
+      <small id="constituencyLabel" class="d-block mt-2 text-white"></small>
+    </div>
+ </div>
+</nav>
+
+<div class="container my-4">
+  <div class="d-flex align-items-center mb-3">
+    <div class="progress w-100 me-3">
+      <div id="progressBar" class="progress-bar" style="width:0%" aria-valuemin="0" aria-valuemax="100" role="progressbar" aria-label="Progress"></div>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
+        <li><button id="contrastBtn" class="dropdown-item"><i class="fa-solid fa-circle-half-stroke me-2"></i>High contrast mode</button></li>
+        <li><button id="fontSizeBtn" class="dropdown-item"><i class="fa-solid fa-text-height me-2"></i>Larger text</button></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><button id="resetBtn" class="dropdown-item dropdown-item-danger"><i class="fa-solid fa-trash me-2"></i>Reset form</button></li>
+      </ul>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between mb-4 text-muted">
+     <span class="progress-step" data-step="1">Find MP</span>
+     <span class="progress-step" data-step="2">Draft</span>
+     <span class="progress-step" data-step="3">Review &amp; Send</span>
+  </div>
+
+  <div id="contentArea" class="row gy-4">
+    <!-- MP card -->
+    <div class="col-md-4">
+      <div id="mpCard" class="card shadow-sm d-none mp-card">
+        <div class="card-body text-center position-relative">
+          <div class="dropdown writing-guidelines">
+            <button class="btn btn-sm btn-link text-muted p-0" type="button" id="guidelineDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+            <div class="dropdown-menu p-3" style="width: 300px;">
+              <h6 class="mb-2">Writing Guidelines</h6>
+              <p class="small mb-2">When writing to your MP:</p>
+              <ul class="small mb-0 ps-3">
+                <li>Be polite and respectful</li>
+                <li>Stick to one issue per message</li>
+                <li>Explain your personal connection</li>
+                <li>Be specific about what you want</li>
+                <li>Keep it concise (under 500 words)</li>
+              </ul>
+            </div>
+          </div>
+          <img id="mpImg" class="mp-img mb-3" alt="MP photo">
+          <h2 id="mpName" class="card-title mb-2"></h2>
+          <div class="mb-2"><span id="mpParty" class="badge"></span></div>
+          <p id="mpSince" class="mb-3 text-muted"></p>
+          <p id="mpEmail" class="d-none"></p>
+          <p id="mpPhone" class="d-none"></p>
+        </div>
+        <div id="mpContactDetails" class="contact-details"></div>
+        <div class="card-body small p-3 voting-record">
+          <h6 class="mb-3 fw-bold">Recent Voting Record</h6>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span>NHS Funding</span>
+              <small>84% For</small>
+            </div>
+            <div class="vote-bar">
+              <div class="vote-for" style="width: 84%"></div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span>Climate Bill</span>
+              <small>72% For</small>
+            </div>
+            <div class="vote-bar">
+              <div class="vote-for" style="width: 72%"></div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span>Housing Development</span>
+              <small>23% For</small>
+            </div>
+            <div class="vote-bar">
+              <div class="vote-for" style="width: 23%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-center">
+          <div class="d-flex gap-2 justify-content-center">
+            <a id="votingLink" class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener noreferrer">
+              <i class="fa-solid fa-chart-simple me-1"></i>Full voting record
+            </a>
+            <a id="websiteLink" class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener noreferrer">
+              <i class="fa-solid fa-globe me-1"></i>Website
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Placeholder before MP lookup -->
+      <div id="mpPlaceholder" class="card shadow-sm text-center p-4">
+        <div class="text-center mb-3">
+          <i class="fa-solid fa-user-tie fa-4x text-muted mb-3"></i>
+          <h5>Find Your MP</h5>
+          <p class="text-muted small">Enter your postcode above to find your representative</p>
+        </div>
+        <div class="writing-tips mb-2">
+          <h6 class="mb-2"><i class="fa-solid fa-lightbulb me-2"></i>Writing to your MP works</h6>
+          <div class="tip-item">
+            <span class="tip-number">1</span>
+            <span>MPs prioritize constituent messages</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-number">2</span>
+            <span>Personal stories have the most impact</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-number">3</span>
+            <span>Be specific about the change you want</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-number">4</span>
+            <span>Every message is logged and counted</span>
+          </div>
+        </div>
+        <div class="text-center small">
+          <p>"MPs read all constituent messages and over 80% say these influence their decisions."</p>
+          <footer class="blockquote-footer">Parliamentary Digital Service, 2024</footer>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Message form -->
+    <div class="col-md-8">
+      <form id="draftForm" class="card shadow-sm p-4">
+        <h3 class="mb-3">Compose your message</h3>
+
+        <div class="alert alert-warning d-none" id="mpWarning">
+          <i class="fa-solid fa-triangle-exclamation me-2"></i>
+          Please find your MP by entering your postcode above before composing your message.
+        </div>
+
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5>Your Details</h5>
+            <span class="badge bg-info address-tooltip" 
+                  data-bs-toggle="tooltip" 
+                  data-bs-placement="top" 
+                  data-bs-title="MPs can only respond to their constituents. Your address verifies you're in their constituency.">
+              <i class="fa-solid fa-circle-info me-1"></i>Why is this needed?
+            </span>
+          </div>
+        
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input id="fullName" class="form-control" placeholder="Full name" autocomplete="name" required>
+                <label for="fullName">Full name *</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input id="userEmail" type="email" class="form-control" placeholder="Email" autocomplete="email" required>
+                <label for="userEmail">Email *</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-floating">
+                <textarea id="userAddress" class="form-control" placeholder="Address" rows="3" autocomplete="street-address" style="height: 100px" required></textarea>
+                <label for="userAddress">Address *</label>
+              </div>
+              <div class="form-text">Include your full address including postcode</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <h5>Message Details</h5>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Topic</label>
+              <select id="topicSelect" class="form-select mb-2">
+                <option value="" selected disabled>Choose…</option>
+                <option value="nhs">NHS & Healthcare</option>
+                <option value="education">Education</option>
+                <option value="climate">Climate & Environment</option>
+                <option value="housing">Housing</option>
+                <option value="economy">Economy & Jobs</option>
+                <option value="immigration">Immigration & Asylum</option>
+                <option value="transport">Transport & Infrastructure</option>
+                <option value="benefits">Benefits & Welfare</option>
+                <option value="crime">Crime & Policing</option>
+                <option value="foreign">Foreign Policy</option>
+                <option value="other">Other</option>
+              </select>
+              <div class="d-flex flex-wrap gap-2 mt-2">
+                <span class="badge bg-light text-dark topic-badge">NHS Waiting Times</span>
+                <span class="badge bg-light text-dark topic-badge">School Funding</span>
+                <span class="badge bg-light text-dark topic-badge">Climate Action</span>
+                <span class="badge bg-light text-dark topic-badge">Social Housing</span>
+                <span class="badge bg-light text-dark topic-badge">Rail Services</span>
+                <span class="badge bg-light text-dark topic-badge">Cost of Living</span>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-floating">
+                <input id="emailSubject" class="form-control" placeholder="Subject" required>
+                <label for="emailSubject">Subject *</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <label for="emailBody" class="form-label">Message *</label>
+              <div class="position-relative">
+                <textarea id="emailBody" class="form-control" rows="10" required></textarea>
+                <div id="charCount" class="char-count">0/2000 characters</div>
+              </div>
+              <div class="d-flex justify-content-between mt-2">
+                <div class="form-text">Be polite, personal and specific</div>
+                <button type="button" id="templateBtn" class="btn btn-sm btn-outline-secondary">
+                  <i class="fa-solid fa-wand-magic-sparkles me-1"></i>Use template
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-check mb-3">
+          <input id="copyMe" type="checkbox" class="form-check-input" checked>
+          <label class="form-check-label" for="copyMe">Send me a copy</label>
+        </div>
+        
+        <div class="form-check mb-4">
+          <input id="privacyConsent" type="checkbox" class="form-check-input" required>
+          <label class="form-check-label" for="privacyConsent">
+            I confirm that I'm a constituent and agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">privacy policy</a>
+          </label>
+        </div>
+        
+        <div class="d-grid gap-2">
+          <button id="previewBtn" type="button" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-eye me-1"></i>Preview
+          </button>
+          <button id="sendBtn" type="submit" class="btn btn-primary" disabled>
+            <i class="fa-solid fa-paper-plane me-1"></i>Send
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewModalLabel">Message Preview</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <strong>To:</strong> <span id="previewTo"></span>
+        </div>
+        <div class="mb-3">
+          <strong>From:</strong> <span id="previewFrom"></span>
+        </div>
+        <div class="mb-3">
+          <strong>Subject:</strong> <span id="previewSubject"></span>
+        </div>
+        <hr>
+        <div id="previewBody" class="mb-3"></div>
+        <hr>
+        <div id="previewSignature" class="mb-3"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Edit</button>
+        <button type="button" class="btn btn-primary" id="previewSendBtn">Send Message</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>How we use your data</h6>
+        <p>Your personal information is only used to:</p>
+        <ul>
+          <li>Forward your message to your MP</li>
+          <li>Verify you are a constituent of the MP</li>
+          <li>Send you a copy of your message (if requested)</li>
+        </ul>
+        
+        <h6>We do not:</h6>
+        <ul>
+          <li>Store your message content on our servers permanently</li>
+          <li>Share your details with third parties</li>
+          <li>Use your information for marketing purposes</li>
+        </ul>
+        
+        <p>For more information on how your data is handled, please see our full <a href="#" target="_blank">privacy policy</a>.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I understand</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="successModalLabel">Message Sent Successfully</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <i class="fa-solid fa-circle-check text-success fa-4x mb-3"></i>
+          <h4>Thank you!</h4>
+          <p>Your message has been sent to your MP.</p>
+        </div>
+        
+        <div class="alert alert-info">
+          <h6><i class="fa-solid fa-info-circle me-2"></i>What happens next?</h6>
+          <p class="mb-0">MPs typically respond within 2-3 weeks. If you requested a copy, you'll receive it shortly.</p>
+        </div>
+        
+        <h6 class="mt-4">Would you like to:</h6>
+        <div class="d-grid gap-2">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" id="writeAnotherBtn">
+            <i class="fa-solid fa-pen-to-square me-1"></i>Write another message
+          </button>
+          <button type="button" class="btn btn-outline-primary" id="shareFeedbackBtn">
+            <i class="fa-solid fa-comment me-1"></i>Share your feedback
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="py-4 bg-dark text-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mb-3 mb-md-0">
+        <h5 class="h6">Write to Your MP</h5>
+        <p class="small mb-0">A Democracy Digital project making it easy for you to contact your elected representatives.</p>
+      </div>
+      <div class="col-md-3 mb-3 mb-md-0">
+        <h5 class="h6">Resources</h5>
+        <ul class="list-unstyled small">
+          <li><a href="#" class="text-white">How it works</a></li>
+          <li><a href="#" class="text-white">Effective advocacy</a></li>
+          <li><a href="#" class="text-white">FAQs</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5 class="h6">Links</h5>
+        <ul class="list-unstyled small">
+          <li><a href="#" class="text-white">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-3 small">
+      &copy; 2024 Democracy Digital. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const apiBase = 'https://members-api.parliament.uk/api';
+  const postcodeInput = document.getElementById('postcodeInput');
+  const findBtn = document.getElementById('findBtn');
+  const mpCard = document.getElementById('mpCard');
+  const mpImg = document.getElementById('mpImg');
+  const mpName = document.getElementById('mpName');
+  const mpParty = document.getElementById('mpParty');
+  const mpEmail = document.getElementById('mpEmail');
+  const mpConstituency = document.getElementById('mpConstituency');
+  const mpPhone = document.getElementById('mpPhone');
+  const mpSince = document.getElementById('mpSince');
+  const votingLink = document.getElementById('votingLink');
+  const websiteLink = document.getElementById('websiteLink');
+  const constituencyLabel = document.getElementById('constituencyLabel');
+  const mpPlaceholder = document.getElementById('mpPlaceholder');
+  const mpOffice = document.getElementById('mpOffice');
+  const mpContactDetails = document.getElementById('mpContactDetails');
+
+  function showMPCard(show) {
+    if (mpCard) mpCard.classList.toggle('d-none', !show);
+    if (mpPlaceholder) mpPlaceholder.classList.toggle('d-none', show);
+  }
+
+  async function findMP(postcode) {
+    showMPCard(false);
+    constituencyLabel.textContent = '';
+    if (!postcode || !postcode.trim()) {
+      constituencyLabel.textContent = 'Please enter a postcode.';
+      return;
+    }
+    constituencyLabel.textContent = 'Looking up MP...';
+    try {
+      const res = await fetch(`${apiBase}/Members/Search?Location=${encodeURIComponent(postcode)}&House=1&IsEligible=true&IsCurrentMember=true&skip=0&take=20`);
+      const data = await res.json();
+      console.log('MP API response:', data);
+      if (!data || !data.items || !data.items.length) {
+        constituencyLabel.textContent = 'No current MP found for this postcode.';
+        showMPCard(false);
+        return;
+      }
+      const mp = data.items[0].value;
+      // Include the constituency name in the header area
+      constituencyLabel.textContent = `Constituency: ${mp.latestHouseMembership.membershipFrom}`;
+      
+      // Fetch contact info for the MP
+      const contactRes = await fetch(`${apiBase}/Members/${mp.id}/Contact`);
+      const contactData = await contactRes.json();
+      console.log('Contact API response:', contactData);
+      if (!Array.isArray(contactData.value)) {
+        console.error('contactData.value is not an array:', contactData.value);
+      }
+
+      // Socials
+      const website = contactData.value.find(c => c.type === 'Website')?.line1;
+      const twitter = contactData.value.find(c => c.type === 'X (formerly Twitter)')?.line1;
+      const facebook = contactData.value.find(c => c.type === 'Facebook')?.line1;
+      const instagram = contactData.value.find(c => c.type === 'Instagram')?.line1;
+
+      // Parliamentary office
+      const parliamentaryOffice = contactData.value.find(c => c.type === 'Parliamentary office');
+      let parliamentaryAddress = '', parliamentaryPhone = '', parliamentaryEmail = '';
+      if (parliamentaryOffice) {
+        parliamentaryAddress = [parliamentaryOffice.line1, parliamentaryOffice.line5, parliamentaryOffice.postcode].filter(Boolean).join(', ');
+        parliamentaryPhone = parliamentaryOffice.phone || '';
+        parliamentaryEmail = parliamentaryOffice.email || '';
+      }
+
+      // Constituency office
+      const constituencyOffice = contactData.value.find(c => c.type === 'Constituency office');
+      const constituencyAddress = [
+        constituencyOffice?.line1,
+        constituencyOffice?.line2,
+        constituencyOffice?.postcode
+      ].filter(Boolean).join(', ');
+      const constituencyPhone = constituencyOffice?.phone || '';
+      const constituencyEmail = constituencyOffice?.email || '';
+
+      // Compose contact info HTML (swanky, modern, grouped)
+      let html = '';
+      if (parliamentaryAddress || parliamentaryPhone || parliamentaryEmail) {
+        html += `<div class="contact-section">
+          <h6><i class="fa-solid fa-building text-primary"></i>Parliamentary Office</h6>`;
+        if (parliamentaryAddress) {
+          html += `<div class="contact-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>${parliamentaryAddress}</span>
+          </div>`;
+        }
+        if (parliamentaryPhone) {
+          html += `<div class="contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <a href="tel:${parliamentaryPhone.replace(/\s/g,'')}">${parliamentaryPhone}</a>
+          </div>`;
+        }
+        if (parliamentaryEmail) {
+          html += `<div class="contact-item">
+            <i class="fa-solid fa-envelope"></i>
+            <a href="mailto:${parliamentaryEmail}">${parliamentaryEmail}</a>
+          </div>`;
+        }
+        html += `</div>`;
+      }
+      if (constituencyAddress || constituencyPhone || constituencyEmail) {
+        html += `<div class="contact-section">
+          <h6><i class="fa-solid fa-map-marker-alt text-success"></i>Constituency Office</h6>`;
+        if (constituencyAddress) {
+          html += `<div class="contact-item">
+            <i class="fa-solid fa-map"></i>
+            <span>${constituencyAddress}</span>
+          </div>`;
+        }
+        if (constituencyPhone) {
+          html += `<div class="contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <a href="tel:${constituencyPhone.replace(/\s/g,'')}">${constituencyPhone}</a>
+          </div>`;
+        }
+        if (constituencyEmail) {
+          html += `<div class="contact-item">
+            <i class="fa-solid fa-envelope"></i>
+            <a href="mailto:${constituencyEmail}">${constituencyEmail}</a>
+          </div>`;
+        }
+        html += `</div>`;
+      }
+      // Social links as a separate well-designed section
+      let socialLinks = '';
+      if (website || twitter || facebook || instagram) {
+        socialLinks += `<div class="social-links">`;
+        if (website) socialLinks += `<a href="${website}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-globe"></i>Website</a>`;
+        if (twitter) socialLinks += `<a href="${twitter}" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i>Twitter/X</a>`;
+        if (facebook) socialLinks += `<a href="${facebook}" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i>Facebook</a>`;
+        if (instagram) socialLinks += `<a href="${instagram}" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i>Instagram</a>`;
+        socialLinks += `</div>`;
+      }
+      
+      mpContactDetails.innerHTML = html + socialLinks;
+
+      // Remove redundant top-level email/phone
+      if (mpEmail) mpEmail.innerHTML = '';
+      if (mpPhone) mpPhone.innerHTML = '';
+      if (mpOffice) mpOffice.innerHTML = '';
+
+      // 3. Update UI
+      console.log('Rendering MP card with:', {
+        parliamentaryAddress, parliamentaryPhone, parliamentaryEmail,
+        constituencyAddress, constituencyPhone, constituencyEmail,
+        website, twitter, facebook, instagram
+      });
+      
+      try {
+        // Defensively update all UI elements, checking for null elements and properties
+        if (mpName) mpName.textContent = mp.nameDisplayAs || '';
+        
+        if (mpParty) {
+          mpParty.textContent = mp.latestParty?.name || '';
+          if (mp.latestParty?.abbreviation) {
+            mpParty.className = 'badge mb-2 party-' + mp.latestParty.abbreviation.toLowerCase();
+          } else {
+            mpParty.className = 'badge mb-2 party-other';
+          }
+        }
+        
+        if (mpSince && mp.latestHouseMembership?.membershipStartDate) {
+          mpSince.textContent = `MP since ${mp.latestHouseMembership.membershipStartDate.slice(0,4)}`;
+        } else if (mpSince) {
+          mpSince.textContent = '';
+        }
+        
+        if (mpConstituency && mp.latestHouseMembership?.membershipFrom) {
+          mpConstituency.textContent = mp.latestHouseMembership.membershipFrom;
+        }
+        
+        if (mpImg) {
+          mpImg.src = mp.thumbnailUrl || 'https://www.parliament.uk/static-image-placeholder.jpg';
+          mpImg.alt = `Photo of ${mp.nameDisplayAs || 'MP'}`;
+        }
+        
+        if (votingLink && mp.id) {
+          votingLink.href = `https://members.parliament.uk/member/${mp.id}/voting`;
+        }
+        
+        if (websiteLink) {
+          websiteLink.href = website || (mp.id ? `https://members.parliament.uk/member/${mp.id}` : '#');
+        }
+        
+        // Now safely show the card
+        showMPCard(true);
+        
+      } catch (uiError) {
+        // If there's an error updating the UI, log it and show a helpful message
+        console.error('Error updating UI:', uiError);
+        constituencyLabel.textContent = 'Error displaying MP information. Please try again.';
+        showMPCard(false);
+      }
+    } catch (e) {
+      // More detailed error logging
+      console.error('Error in findMP:', e);
+      console.error('Error details:', e.message);
+      console.error('Stack trace:', e.stack);
+      constituencyLabel.textContent = 'Error looking up MP. Please try again.';
+      showMPCard(false);
+    }
+  }
+
+  if (findBtn) {
+    findBtn.addEventListener('click', () => {
+      findMP(postcodeInput.value);
+    });
+  }
+  
+  if (postcodeInput) {
+    postcodeInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        findMP(postcodeInput.value);
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
