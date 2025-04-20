@@ -11,6 +11,10 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
   <link rel="manifest" id="manifestLink">
+  <!-- Mapbox GL JS library -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <!-- Mapbox Address Autofill CSS and JS -->
   <style>
    /* --- Variables --- */
    :root {
@@ -1389,9 +1393,8 @@
               </div>
               <!-- Address dropdown will appear here when postcode lookup is performed -->
               <div id="addressLookupContainer" class="mt-2 d-none">
-                <select id="addressDropdown" class="form-select">
-                  <option value="" selected>Select your address...</option>
-                </select>
+                <div id="address-autofill-container" class="mb-3"></div>
+                <div id="minimap-container" class="mt-3 mb-3 d-none" style="height: 200px; width: 100%; border-radius: 0.5rem;"></div>
                 <div id="addressLookupStatus" class="form-text mt-1"></div>
               </div>
             </div>
@@ -1612,6 +1615,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const apiBase = 'https://members-api.parliament.uk/api';
+  const mapboxToken = 'pk.eyJ1IjoibXVhemFtc2FyZmFyYXoiLCJhIjoiY205b2dzdnVlMTVuZDJqczcwbnBseW1tYiJ9.-MvfX63GtzUQceap1g6iJQ';
 
   // --- DOM Elements ---
   const postcodeInput = document.getElementById('postcodeInput');
@@ -1687,6 +1691,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Add after the declaration of other DOM elements in the JavaScript section
   const postcodeSuggestions = document.getElementById('postcodeSuggestions');
   const postcodeError = document.getElementById('postcodeError');
+  const addressLookupContainer = document.getElementById('addressLookupContainer');
+  const addressAutofillContainer = document.getElementById('address-autofill-container');
+  const minimapContainer = document.getElementById('minimap-container');
+  const addressLookupStatus = document.getElementById('addressLookupStatus');
+  const findAddressBtn = document.getElementById('findAddressBtn');
 
   // --- Helper Functions ---
 
@@ -1986,26 +1995,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // --- Event Listeners ---
-
-  // Find MP Button/Enter Key (original handlers - no longer needed)
-  /* 
-  if (findBtn) {
-    findBtn.addEventListener('click', () => {
-      findMP(postcodeInput.value.trim());
-    });
-  }
-
-  if (postcodeInput) {
-    postcodeInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        findMP(postcodeInput.value.trim());
-      }
-    });
-  }
-  */
-
   // Character Count for Textarea
   if (emailBodyTextarea) {
     emailBodyTextarea.addEventListener('input', updateCharCount);
@@ -2285,77 +2274,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateProgress(1); // Start at step 1
     updateSendButtonState(); // Disable send button initially
 
-    // --- Optional: Auto-find MP if postcode is in URL or cookie ---
-    // You could add logic here to read a postcode from a query parameter
-    // or a cookie and automatically trigger findMP on page load.
-
-  // Add postcode typeahead and validation functionality
-  if (postcodeInput) {
-    let typingTimer;
-    const doneTypingInterval = 500; // ms delay before API call
-
-    postcodeInput.addEventListener('input', function() {
-      clearTimeout(typingTimer);
-      const postcode = this.value.trim().toUpperCase();
-      
-      // Clear previous error message
-      postcodeError.textContent = '';
-      
-      // Only proceed if we have at least 2 characters
-      if (postcode.length >= 2) {
-        typingTimer = setTimeout(() => {
-          // Validate and suggest postcodes via postcodes.io API
-          getPostcodeSuggestions(postcode);
-        }, doneTypingInterval);
-      } else {
-        // Clear suggestions if input too short
-        postcodeSuggestions.innerHTML = '';
-      }
-    });
-  }
-
-  // Function to get postcode suggestions from postcodes.io
-  async function getPostcodeSuggestions(partialPostcode) {
-    try {
-      // First try to validate if it's a complete postcode
-      const validateUrl = `https://api.postcodes.io/postcodes/${encodeURIComponent(partialPostcode)}/validate`;
-      const validateResponse = await fetch(validateUrl);
-      const validateData = await validateResponse.json();
-      
-      if (validateData.status === 200 && validateData.result) {
-        // It's a valid postcode, no need for further suggestions
-        postcodeSuggestions.innerHTML = '';
-        postcodeError.textContent = '✓ Valid postcode';
-        postcodeError.className = 'd-block mt-1 text-success fw-medium';
-        return;
-      }
-      
-      // If it's not a complete valid postcode, get suggestions
-      const url = `https://api.postcodes.io/postcodes/${encodeURIComponent(partialPostcode)}/autocomplete`;
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      // Clear previous suggestions
-      postcodeSuggestions.innerHTML = '';
-      
-      if (data.status === 200 && data.result && data.result.length > 0) {
-        // Add each suggestion to the datalist
-        data.result.forEach(suggestion => {
-          const option = document.createElement('option');
-          option.value = suggestion;
-          postcodeSuggestions.appendChild(option);
-        });
-        postcodeError.textContent = '';
-      } else if (partialPostcode.length >= 3) {
-        // Only show not found message if user entered enough characters
-        postcodeError.textContent = 'No matching postcodes found';
-        postcodeError.className = 'd-block mt-1 text-warning fw-medium';
-      }
-    } catch (error) {
-      console.error('Error getting postcode suggestions:', error);
-    }
-  }
-
   // Validate postcode before search
   if (findBtn) {
     findBtn.addEventListener('click', () => {
@@ -2411,18 +2329,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Add address lookup DOM elements
-  const findAddressBtn = document.getElementById('findAddressBtn');
-  const addressLookupContainer = document.getElementById('addressLookupContainer');
-  const addressDropdown = document.getElementById('addressDropdown');
-  const addressLookupStatus = document.getElementById('addressLookupStatus');
-  // userAddressInput is already defined earlier in the code
+  // Initialize Mapbox Address Autofill
+  if (findAddressBtn && addressAutofillContainer) {
+    // Initialize Mapbox Search 
+    let autofill;
+    let minimap;
+    let retrievedFeature;
 
-  // Initialize address lookup functionality
-  if (findAddressBtn) {
-    findAddressBtn.addEventListener('click', async () => {
-      // Get postcode from input
-      const postcode = postcodeInput.value.trim().toUpperCase();
+    // Show the address autofill UI when the button is clicked
+    findAddressBtn.addEventListener('click', function() {
+      const postcode = postcodeInput.value.trim();
       
       if (!postcode) {
         showToast('Please enter a postcode first', 'warning');
@@ -2430,282 +2346,587 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       
-      // Show loading status
-      addressLookupStatus.textContent = 'Looking up addresses...';
-      addressLookupStatus.className = 'form-text mt-1 text-muted';
-      addressLookupContainer.classList.remove('d-none');
-      findAddressBtn.disabled = true;
+      showAddressAutofill(postcode);
+    });
+
+    function showAddressAutofill(initialPostcode) {
+      // Initialize Mapbox address autofill if not already done
+      if (!autofill) {
+        // Create the address autofill instance
+        autofill = new MapboxAddressAutofill({
+          accessToken: mapboxToken,
+          theme: {
+            variables: {
+              fontFamily: 'Inter, sans-serif',
+              borderRadius: '0.5rem',
+              padding: '0.75rem 1rem',
+              width: '100%'
+            }
+          }
+        });
+
+        // Create minimap
+        minimap = new MapboxAddressMinimap({
+          accessToken: mapboxToken,
+          canAdjustMarker: true,
+          satelliteToggle: true
+        });
+
+        // Handle address selection
+        autofill.addEventListener('retrieve', (e) => {
+          console.log('Address selected:', e.detail);
+          retrievedFeature = e.detail.features[0];
+          
+          if (retrievedFeature) {
+            // Show the minimap with the selected location
+            minimap.feature = retrievedFeature;
+            minimap.show = true;
+            minimapContainer.classList.remove('d-none');
+            
+            // Format the address for the textarea
+            formatAddressFromFeature(retrievedFeature);
+            
+            addressLookupStatus.textContent = 'Address selected!';
+            addressLookupStatus.className = 'form-text mt-1 text-success';
+          }
+        });
+      }
+
+      // Set the initial search value to the postcode if provided
+      if (initialPostcode) {
+        autofill.setValue(initialPostcode);
+      }
+
+      // Render the autofill component
+      autofill.render({ container: addressAutofillContainer });
       
-      try {
-        // First validate the postcode
-        const isValid = await validatePostcode(postcode);
-        
-        if (!isValid) {
-          addressLookupStatus.textContent = 'Invalid postcode. Please enter a valid UK postcode.';
+      // Show the container
+      addressLookupContainer.classList.remove('d-none');
+      
+      // Add status message
+      addressLookupStatus.textContent = 'Start typing an address to see suggestions';
+      addressLookupStatus.className = 'form-text mt-1 text-muted';
+    }
+
+    function formatAddressFromFeature(feature) {
+      if (!feature) return;
+      
+      // Format the full address from the feature
+      const placeName = feature.place_name;
+      const addressLines = placeName.split(',').map(line => line.trim());
+      
+      // Format the address for the textarea
+      userAddressInput.value = addressLines.join('\n');
+    }
+  }
+
+  // Initialize Mapbox address lookup
+  if (findAddressBtn && addressLookupContainer) {
+    // Show the address lookup when the button is clicked
+    findAddressBtn.addEventListener('click', function() {
+      const postcode = postcodeInput.value.trim();
+      
+      if (!postcode) {
+        showToast('Please enter a postcode first', 'warning');
+        postcodeInput.focus();
+        return;
+      }
+
+      // Show loading state
+      addressLookupStatus.textContent = 'Validating postcode...';
+      addressLookupStatus.className = 'form-text mt-1 text-muted';
+      
+      // First validate the postcode with postcodes.io
+      fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}/validate`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 200 && data.result) {
+            // Valid postcode, get postcode details
+            addressLookupStatus.textContent = 'Retrieving address information...';
+            return fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}`);
+          } else {
+            throw new Error('Invalid postcode');
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 200 && data.result) {
+            const postcodeData = data.result;
+            showAddressForm(postcodeData);
+          } else {
+            throw new Error('Could not retrieve postcode data');
+          }
+        })
+        .catch(error => {
+          console.error('Error processing postcode:', error);
+          addressLookupStatus.textContent = 'Error: ' + (error.message || 'Could not process postcode. Please enter your address manually.');
           addressLookupStatus.className = 'form-text mt-1 text-danger';
-          findAddressBtn.disabled = false;
+          showSimpleAddressForm(postcode);
+        });
+    });
+
+    // Function to show a pre-filled address form based on postcode data
+    function showAddressForm(postcodeData) {
+      // Show the container
+      addressLookupContainer.classList.remove('d-none');
+      
+      // Create a textarea for manual entry
+      const geocoderContainer = document.getElementById('geocoder-container');
+      geocoderContainer.innerHTML = '';
+      
+      // Create structured address entry with multiple fields
+      const addressForm = document.createElement('div');
+      addressForm.className = 'address-form';
+      
+      // House number/name field
+      const houseField = document.createElement('div');
+      houseField.className = 'mb-2';
+      const houseLabel = document.createElement('label');
+      houseLabel.textContent = 'House/Building Number or Name';
+      houseLabel.className = 'form-label';
+      const houseInput = document.createElement('input');
+      houseInput.type = 'text';
+      houseInput.className = 'form-control';
+      houseInput.placeholder = 'e.g. 42 or Willow House';
+      houseField.appendChild(houseLabel);
+      houseField.appendChild(houseInput);
+      addressForm.appendChild(houseField);
+      
+      // Street field
+      const streetField = document.createElement('div');
+      streetField.className = 'mb-2';
+      const streetLabel = document.createElement('label');
+      streetLabel.textContent = 'Street';
+      streetLabel.className = 'form-label';
+      const streetInput = document.createElement('input');
+      streetInput.type = 'text';
+      streetInput.className = 'form-control';
+      streetInput.placeholder = 'e.g. High Street';
+      streetField.appendChild(streetLabel);
+      streetField.appendChild(streetInput);
+      addressForm.appendChild(streetField);
+      
+      // Create remaining address info (pre-filled)
+      const addressInfo = document.createElement('div');
+      addressInfo.className = 'mb-3 mt-3';
+      
+      // Format remaining address parts
+      const addressParts = [];
+      if (postcodeData.parish && !['Unparished Area', 'null', 'undefined'].includes(postcodeData.parish)) {
+        addressParts.push(postcodeData.parish);
+      }
+      if (postcodeData.admin_ward) {
+        addressParts.push(postcodeData.admin_ward);
+      }
+      if (postcodeData.admin_district) {
+        addressParts.push(postcodeData.admin_district);
+      }
+      if (postcodeData.admin_county) {
+        addressParts.push(postcodeData.admin_county);
+      }
+      addressParts.push(postcodeData.postcode);
+      
+      const addressText = addressParts.join('\n');
+      
+      const addressDisplay = document.createElement('div');
+      addressDisplay.className = 'card p-3 bg-light';
+      addressDisplay.innerHTML = `
+        <small class="text-muted">The following will be added to your address:</small>
+        <div class="mt-2 mb-2" style="white-space: pre-line;">${addressText}</div>
+      `;
+      
+      addressInfo.appendChild(addressDisplay);
+      addressForm.appendChild(addressInfo);
+      
+      // Add a button to apply address
+      const applyBtn = document.createElement('button');
+      applyBtn.type = 'button';
+      applyBtn.className = 'btn btn-primary';
+      applyBtn.textContent = 'Use This Address';
+      addressForm.appendChild(applyBtn);
+      
+      // Add the form to the container
+      geocoderContainer.appendChild(addressForm);
+      
+      // Listen for button click to apply address
+      applyBtn.addEventListener('click', function() {
+        const houseValue = houseInput.value.trim();
+        const streetValue = streetInput.value.trim();
+        
+        if (!houseValue || !streetValue) {
+          showToast('Please enter both house/building details and street', 'warning');
           return;
         }
         
-        // Fetch addresses for this postcode
-        // Note: In a real implementation, you would use a commercial address lookup API
-        // such as getAddress.io, Ideal Postcodes, or Royal Mail's API
-        const addresses = await getAddressesFromPostcode(postcode);
+        // Format the complete address
+        const fullAddress = [
+          houseValue,
+          streetValue,
+          ...addressParts
+        ].join('\n');
         
-        // Clear any existing options except the first one
-        addressDropdown.innerHTML = '<option value="" selected>Select your address...</option>';
+        // Update the address field
+        userAddressInput.value = fullAddress;
         
-        if (addresses && addresses.length > 0) {
-          // Add each address as an option
-          addresses.forEach((address, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.textContent = address.formatted;
-            addressDropdown.appendChild(option);
-          });
-          
-          addressLookupStatus.textContent = `${addresses.length} addresses found`;
-          addressLookupStatus.className = 'form-text mt-1 text-success';
-        } else {
-          addressLookupStatus.textContent = 'No addresses found for this postcode. Please enter manually.';
-          addressLookupStatus.className = 'form-text mt-1 text-warning';
-        }
-      } catch (error) {
-        console.error('Error looking up addresses:', error);
-        addressLookupStatus.textContent = 'Error looking up addresses. Please try again or enter manually.';
-        addressLookupStatus.className = 'form-text mt-1 text-danger';
-      } finally {
-        findAddressBtn.disabled = false;
+        addressLookupStatus.textContent = 'Address applied!';
+        addressLookupStatus.className = 'form-text mt-1 text-success';
+      });
+      
+      // Success message
+      addressLookupStatus.textContent = 'Please enter your house/building details and street';
+      addressLookupStatus.className = 'form-text mt-1 text-info';
+    }
+    
+    // Fallback for manual entry
+    function showSimpleAddressForm(postcode) {
+      // Show the container
+      addressLookupContainer.classList.remove('d-none');
+      
+      // Create a simple textarea for manual entry
+      const geocoderContainer = document.getElementById('geocoder-container');
+      geocoderContainer.innerHTML = '';
+      
+      const formGroup = document.createElement('div');
+      formGroup.className = 'form-group';
+      
+      const label = document.createElement('label');
+      label.textContent = 'Enter your full address';
+      label.className = 'form-label';
+      formGroup.appendChild(label);
+      
+      const textarea = document.createElement('textarea');
+      textarea.className = 'form-control';
+      textarea.rows = 5;
+      textarea.placeholder = 'House/Building number and name\nStreet\nTown/City\nPostcode';
+      
+      // Pre-fill with postcode if available
+      if (postcode) {
+        textarea.value = postcode;
       }
-    });
+      
+      formGroup.appendChild(textarea);
+      
+      // Add a button to apply address
+      const applyBtn = document.createElement('button');
+      applyBtn.type = 'button';
+      applyBtn.className = 'btn btn-primary mt-2';
+      applyBtn.textContent = 'Use This Address';
+      formGroup.appendChild(applyBtn);
+      
+      geocoderContainer.appendChild(formGroup);
+      
+      // Listen for changes
+      textarea.addEventListener('input', function() {
+        userAddressInput.value = this.value;
+      });
+      
+      // Listen for button click to apply address
+      applyBtn.addEventListener('click', function() {
+        userAddressInput.value = textarea.value;
+        addressLookupStatus.textContent = 'Address applied!';
+        addressLookupStatus.className = 'form-text mt-1 text-success';
+      });
+    }
   }
 
-  // Handle address selection
-  if (addressDropdown) {
-    addressDropdown.addEventListener('change', function() {
-      const selectedIndex = this.value;
+  // Initialize address lookup with Mapbox GL JS
+  if (findAddressBtn && addressLookupContainer) {
+    const mapboxToken = 'pk.eyJ1IjoibXVhemFtc2FyZmFyYXoiLCJhIjoiY205b2dzdnVlMTVuZDJqczcwbnBseW1tYiJ9.-MvfX63GtzUQceap1g6iJQ';
+    let map;
+    let marker;
+    
+    // Show the address lookup when the button is clicked
+    findAddressBtn.addEventListener('click', function() {
+      const postcode = postcodeInput.value.trim();
       
-      if (selectedIndex === '') {
-        // Nothing selected
+      if (!postcode) {
+        showToast('Please enter a postcode first', 'warning');
+        postcodeInput.focus();
         return;
       }
+
+      // Show loading state
+      addressLookupStatus.textContent = 'Looking up postcode location...';
+      addressLookupStatus.className = 'form-text mt-1 text-muted';
+      addressLookupContainer.classList.remove('d-none');
       
-      try {
-        // Get selected address (in a real implementation this would reference the actual address data)
-        const addresses = addressCache[postcodeInput.value.trim().toUpperCase()];
-        const selectedAddress = addresses[selectedIndex];
+      // Create search UI and map container
+      const container = document.getElementById('address-autofill-container');
+      container.innerHTML = `
+        <div class="mb-3">
+          <label class="form-label">Enter your full address</label>
+          <input type="text" id="address-search" class="form-control" placeholder="Start typing your address...">
+        </div>
+        <div id="suggestions-container"></div>
+      `;
+      
+      // Initialize the map container
+      const mapContainer = document.getElementById('minimap-container');
+      mapContainer.classList.remove('d-none');
+      
+      // Initialize map if not already created
+      if (!map) {
+        mapboxgl.accessToken = mapboxToken;
+        map = new mapboxgl.Map({
+          container: 'minimap-container',
+          style: 'mapbox://styles/mapbox/streets-v12',
+          center: [-1.78, 52.47], // Roughly center of UK
+          zoom: 5,
+          interactive: true
+        });
         
-        // Format the address for the textarea
-        const formattedAddress = formatAddressForTextarea(selectedAddress);
-        
-        // Update the address textarea
-        userAddressInput.value = formattedAddress;
-        
-        // Show success message
-        addressLookupStatus.textContent = 'Address selected!';
-        addressLookupStatus.className = 'form-text mt-1 text-success';
-        
-        // Optionally hide the dropdown after selection
-        // addressLookupContainer.classList.add('d-none');
-      } catch (error) {
-        console.error('Error selecting address:', error);
-        addressLookupStatus.textContent = 'Error applying selected address. Please enter manually.';
-        addressLookupStatus.className = 'form-text mt-1 text-danger';
+        // Add navigation controls
+        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
       }
+      
+      // First geocode the postcode to center the map
+      fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(postcode)}.json?access_token=${mapboxToken}&country=gb&types=postcode`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.features && data.features.length > 0) {
+            const feature = data.features[0];
+            const center = feature.center;
+            
+            // Center the map on the postcode
+            map.flyTo({
+              center: center,
+              zoom: 15
+            });
+            
+            // Add a marker
+            if (marker) marker.remove();
+            marker = new mapboxgl.Marker({
+              color: '#1e40af',
+              draggable: true
+            })
+              .setLngLat(center)
+              .addTo(map);
+            
+            // Update status
+            addressLookupStatus.textContent = 'Type your street and house number above';
+            addressLookupStatus.className = 'form-text mt-1 text-info';
+            
+            // Create address form from postcode data
+            createAddressFormFromPostcode(postcode);
+            
+            // Set up the address search functionality
+            setupAddressSearch(postcode);
+          } else {
+            // Postcode not found
+            addressLookupStatus.textContent = 'Postcode not found. Please enter your address manually.';
+            addressLookupStatus.className = 'form-text mt-1 text-warning';
+            
+            // Show manual address form
+            showManualAddressForm(postcode);
+          }
+        })
+        .catch(error => {
+          console.error('Error geocoding postcode:', error);
+          addressLookupStatus.textContent = 'Error looking up postcode. Please enter your address manually.';
+          addressLookupStatus.className = 'form-text mt-1 text-danger';
+          
+          // Show manual address form
+          showManualAddressForm(postcode);
+        });
     });
-  }
-
-  // Helper function to validate a postcode using postcodes.io
-  async function validatePostcode(postcode) {
-    try {
-      const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}/validate`);
-      const data = await response.json();
-      return data.status === 200 && data.result === true;
-    } catch (error) {
-      console.error('Error validating postcode:', error);
-      return false;
-    }
-  }
-
-  // Cache for address lookups to avoid redundant API calls
-  const addressCache = {};
-
-  // Function to get addresses from a postcode
-  // Using OS Places API - requires API key from Ordnance Survey
-  // https://www.api.gov.uk/os/os-places-api/
-  async function getAddressesFromPostcode(postcode) {
-    // Check if we already have addresses for this postcode in cache
-    if (addressCache[postcode]) {
-      return addressCache[postcode];
-    }
     
-    try {
-      // NOTE: In production, you would need to register for an API key from OS Data Hub
-      // This example uses a placeholder - replace with your actual key
-      const apiKey = 'YOUR_OS_PLACES_API_KEY';
-      const url = `https://api.os.uk/search/places/v1/postcode?postcode=${encodeURIComponent(postcode)}&key=${apiKey}`;
+    // Function to set up address search with suggestions
+    function setupAddressSearch(postcode) {
+      const searchInput = document.getElementById('address-search');
+      const suggestionsContainer = document.getElementById('suggestions-container');
       
-      // For demo purposes, we'll fall back to our mockup data
-      // REMOVE THIS BLOCK IN PRODUCTION AND UNCOMMENT THE FETCH BELOW
-      console.log('Using mock OS Places API response - in production, use actual API');
-      const addresses = await getMockAddressesForDemo(postcode);
-      addressCache[postcode] = addresses;
-      return addresses;
+      if (!searchInput) return;
       
-      /*
-      // UNCOMMENT THIS CODE IN PRODUCTION
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
-      }
+      // Set initial focus
+      searchInput.focus();
       
-      const data = await response.json();
-      
-      if (!data.results || data.results.length === 0) {
-        return [];
-      }
-      
-      // OS Places API returns addresses in a specific format
-      // Transform them into our application's format
-      const addresses = data.results.map(result => {
-        const address = result.DPA || result.LPI || {};
+      // Add event listener for input changes
+      let debounceTimeout;
+      searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimeout);
         
-        return {
-          uprn: address.UPRN,
-          building_number: address.BUILDING_NUMBER,
-          building_name: address.BUILDING_NAME,
-          sub_building_name: address.SUB_BUILDING_NAME,
-          thoroughfare: address.THOROUGHFARE_NAME,
-          dependent_thoroughfare: address.DEPENDENT_THOROUGHFARE_NAME,
-          locality: address.DEPENDENT_LOCALITY,
-          town_or_city: address.POST_TOWN,
-          county: address.COUNTY_UNITARY,
-          postcode: address.POSTCODE,
-          formatted: formatOSAddress(address)
-        };
+        const query = this.value.trim();
+        if (query.length < 3) {
+          suggestionsContainer.innerHTML = '';
+          return;
+        }
+        
+        // Debounce the search to avoid too many API calls
+        debounceTimeout = setTimeout(() => {
+          // Combine the search query with the postcode for better results
+          const searchQuery = `${query} ${postcode}`;
+          
+          // Search for addresses
+          fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json?access_token=${mapboxToken}&country=gb&types=address&proximity=${marker.getLngLat().lng},${marker.getLngLat().lat}`)
+            .then(response => response.json())
+            .then(data => {
+              // Clear previous suggestions
+              suggestionsContainer.innerHTML = '';
+              
+              if (data.features && data.features.length > 0) {
+                // Create suggestions list
+                const suggestionsList = document.createElement('div');
+                suggestionsList.className = 'list-group mt-2 mb-3';
+                
+                // Add each suggestion
+                data.features.forEach(feature => {
+                  const item = document.createElement('button');
+                  item.type = 'button';
+                  item.className = 'list-group-item list-group-item-action';
+                  item.textContent = feature.place_name;
+                  
+                  // Add click handler to select this address
+                  item.addEventListener('click', () => {
+                    // Update the input value
+                    searchInput.value = feature.place_name;
+                    
+                    // Clear suggestions
+                    suggestionsContainer.innerHTML = '';
+                    
+                    // Update marker position
+                    marker.setLngLat(feature.center);
+                    
+                    // Fly to the location
+                    map.flyTo({
+                      center: feature.center,
+                      zoom: 17
+                    });
+                    
+                    // Format the address for the textarea
+                    formatAddressFromFeature(feature);
+                    
+                    // Update status
+                    addressLookupStatus.textContent = 'Address selected!';
+                    addressLookupStatus.className = 'form-text mt-1 text-success';
+                  });
+                  
+                  suggestionsList.appendChild(item);
+                });
+                
+                suggestionsContainer.appendChild(suggestionsList);
+              } else {
+                suggestionsContainer.innerHTML = '<div class="alert alert-info">No matches found. Try a different search or enter your address manually.</div>';
+              }
+            })
+            .catch(error => {
+              console.error('Error searching for addresses:', error);
+              suggestionsContainer.innerHTML = '<div class="alert alert-danger">Error searching for addresses. Please try again.</div>';
+            });
+        }, 300);
       });
-      
-      // Cache the addresses for this postcode
-      addressCache[postcode] = addresses;
-      
-      return addresses;
-      */
-    } catch (error) {
-      console.error('Error getting addresses from OS Places API:', error);
-      return [];
     }
-  }
-
-  // Helper function to format OS Places address for display
-  function formatOSAddress(osAddress) {
-    const parts = [];
     
-    if (osAddress.SUB_BUILDING_NAME) parts.push(osAddress.SUB_BUILDING_NAME);
-    if (osAddress.BUILDING_NAME) parts.push(osAddress.BUILDING_NAME);
+    // Function to create address form from postcode data
+    function createAddressFormFromPostcode(postcode) {
+      // Get postcode details from postcodes.io
+      fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 200 && data.result) {
+            const postcodeData = data.result;
+            
+            // Store postcode data for later use
+            const postcodeInfo = {
+              postcode: postcodeData.postcode,
+              district: postcodeData.admin_district || '',
+              ward: postcodeData.admin_ward || '',
+              parish: postcodeData.parish || '',
+              county: postcodeData.admin_county || ''
+            };
+            
+            // Store in data attribute on container for use when formatting address
+            document.getElementById('address-autofill-container').dataset.postcodeInfo = JSON.stringify(postcodeInfo);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching postcode details:', error);
+        });
+    }
     
-    let numberStreet = '';
-    if (osAddress.BUILDING_NUMBER) numberStreet += osAddress.BUILDING_NUMBER + ' ';
-    if (osAddress.THOROUGHFARE_NAME) numberStreet += osAddress.THOROUGHFARE_NAME;
-    if (numberStreet) parts.push(numberStreet);
-    
-    if (osAddress.DEPENDENT_LOCALITY) parts.push(osAddress.DEPENDENT_LOCALITY);
-    if (osAddress.POST_TOWN) parts.push(osAddress.POST_TOWN);
-    if (osAddress.POSTCODE) parts.push(osAddress.POSTCODE);
-    
-    return parts.join(', ');
-  }
-
-  // Temporary mock function for demonstration purposes only
-  // This simulates OS Places API responses without requiring an API key
-  async function getMockAddressesForDemo(postcode) {
-    try {
-      // Get basic postcode data from postcodes.io to make our demo more realistic
-      const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}`);
-      const data = await response.json();
+    // Function to format address from Mapbox feature
+    function formatAddressFromFeature(feature) {
+      if (!feature) return;
       
-      if (data.status !== 200 || !data.result) {
-        return [];
+      // Try to get stored postcode info
+      let postcodeInfo = {};
+      try {
+        const infoString = document.getElementById('address-autofill-container').dataset.postcodeInfo;
+        if (infoString) {
+          postcodeInfo = JSON.parse(infoString);
+        }
+      } catch (e) {
+        console.error('Error parsing postcode info:', e);
       }
       
-      const postcodeData = data.result;
-      const town = postcodeData.admin_district || postcodeData.parish || 'Town';
-      const streetNames = ['High Street', 'Church Road', 'Main Street', 'Park Avenue', 'Station Road'];
+      // Get the main address part (first line in the place_name)
+      const placeParts = feature.place_name.split(',').map(part => part.trim());
       
-      // Create mock OS Places API format addresses
-      return streetNames.map((street, index) => {
-        const buildingNumber = Math.floor(Math.random() * 100) + 1;
-        const uprn = (Math.floor(Math.random() * 90000000) + 10000000).toString(); // Mock UPRN
+      // Build address parts
+      const addressParts = [];
+      
+      // First line is typically house number + street
+      if (placeParts.length > 0) {
+        addressParts.push(placeParts[0]);
+      }
+      
+      // Add district/locality if available and not already in the first line
+      if (placeParts.length > 1 && !placeParts[0].includes(placeParts[1])) {
+        addressParts.push(placeParts[1]);
+      }
+      
+      // Add postcode information
+      if (postcodeInfo.district) {
+        addressParts.push(postcodeInfo.district);
+      }
+      
+      if (postcodeInfo.county && postcodeInfo.county !== postcodeInfo.district) {
+        addressParts.push(postcodeInfo.county);
+      }
+      
+      // Add postcode
+      if (postcodeInfo.postcode) {
+        addressParts.push(postcodeInfo.postcode);
+      } else if (postcodeInput.value) {
+        addressParts.push(postcodeInput.value.trim().toUpperCase());
+      }
+      
+      // Set the address in the textarea
+      userAddressInput.value = addressParts.join('\n');
+    }
+    
+    // Function to show manual address form
+    function showManualAddressForm(postcode) {
+      const container = document.getElementById('address-autofill-container');
+      container.innerHTML = `
+        <div class="form-group">
+          <label class="form-label">Enter your full address</label>
+          <textarea id="manual-address" class="form-control" rows="5" 
+                   placeholder="House/Building number and name&#10;Street&#10;Town/City&#10;Postcode">${postcode}</textarea>
+          <button type="button" class="btn btn-primary mt-2" id="apply-manual-address">Use This Address</button>
+        </div>
+      `;
+      
+      // Hide map
+      document.getElementById('minimap-container').classList.add('d-none');
+      
+      // Listen for changes on the manual textarea
+      const manualAddress = document.getElementById('manual-address');
+      if (manualAddress) {
+        manualAddress.addEventListener('input', function() {
+          userAddressInput.value = this.value;
+        });
         
-        return {
-          uprn: uprn,
-          building_number: buildingNumber.toString(),
-          building_name: index === 0 ? 'The Willows' : null,
-          sub_building_name: index === 1 ? 'Flat 2' : null,
-          thoroughfare: street,
-          town_or_city: town,
-          county: postcodeData.admin_county || postcodeData.admin_district,
-          postcode: postcodeData.postcode,
-          formatted: `${index === 1 ? 'Flat 2, ' : ''}${index === 0 ? 'The Willows, ' : ''}${buildingNumber} ${street}, ${town}, ${postcodeData.postcode}`
-        };
-      });
-    } catch (error) {
-      console.error('Error creating mock addresses:', error);
-      return [];
+        // Add button click handler
+        const applyBtn = document.getElementById('apply-manual-address');
+        if (applyBtn) {
+          applyBtn.addEventListener('click', function() {
+            userAddressInput.value = manualAddress.value;
+            addressLookupStatus.textContent = 'Address applied!';
+            addressLookupStatus.className = 'form-text mt-1 text-success';
+          });
+        }
+      }
     }
-  }
-
-  // Format address object into a string for the textarea
-  function formatAddressForTextarea(address) {
-    let lines = [];
-    
-    // Add sub-building name (like 'Flat 2') if present
-    if (address.sub_building_name) {
-      lines.push(address.sub_building_name);
-    }
-    
-    // Add building name if present
-    if (address.building_name) {
-      lines.push(address.building_name);
-    }
-    
-    // Add building number and street
-    let streetLine = '';
-    if (address.building_number) {
-      streetLine += address.building_number + ' ';
-    }
-    if (address.thoroughfare) {
-      streetLine += address.thoroughfare;
-    }
-    if (streetLine) {
-      lines.push(streetLine);
-    }
-    
-    // Add dependent thoroughfare if present
-    if (address.dependent_thoroughfare) {
-      lines.push(address.dependent_thoroughfare);
-    }
-    
-    // Add locality if present and different from town
-    if (address.locality && address.locality !== address.town_or_city) {
-      lines.push(address.locality);
-    }
-    
-    // Add town/city
-    if (address.town_or_city) {
-      lines.push(address.town_or_city);
-    }
-    
-    // Add county if present and different from town
-    if (address.county && address.county !== address.town_or_city) {
-      lines.push(address.county);
-    }
-    
-    // Add postcode
-    if (address.postcode) {
-      lines.push(address.postcode);
-    }
-    
-    return lines.join('\n');
   }
 });
 </script>
