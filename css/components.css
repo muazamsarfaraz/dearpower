@@ -1,0 +1,323 @@
+/* Component-specific styles */
+
+/* Progress Steps */
+.progress-wrapper {
+    background-color: var(--gray-100);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--gray-300);
+    z-index: 0;
+}
+
+.progress-step {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    flex: 1;
+}
+
+.step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    border: 2px solid var(--gray-300);
+    color: var(--gray-500);
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-xs);
+    transition: all var(--transition-base);
+}
+
+.step-label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--gray-500);
+    font-weight: 500;
+    transition: color var(--transition-base);
+}
+
+.progress-step.active .step-number {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.progress-step.active .step-label {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.progress-step.completed .step-number {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+}
+
+.progress-step.completed .step-label {
+    color: var(--success-color);
+}
+
+/* Welcome Screen */
+.welcome-hero {
+    text-align: center;
+    padding: var(--spacing-2xl) 0;
+}
+
+.welcome-hero h1 {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-lg);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.welcome-hero .lead {
+    font-size: 1.25rem;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xl);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin: var(--spacing-2xl) 0;
+}
+
+.feature-card {
+    padding: var(--spacing-lg);
+    background-color: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-light-bg);
+    border-radius: var(--radius-lg);
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+/* Address Search */
+.address-search-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.mapboxgl-ctrl-geocoder {
+    max-width: none;
+    width: 100%;
+    font-size: 1rem;
+    box-shadow: none;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+}
+
+.mapboxgl-ctrl-geocoder--input {
+    font-family: inherit;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+}
+
+.mapboxgl-ctrl-geocoder--input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light-bg);
+}
+
+.map-preview {
+    height: 300px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-top: var(--spacing-lg);
+    border: 1px solid var(--gray-200);
+}
+
+/* MP Card */
+.mp-card {
+    max-width: 600px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.mp-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    padding: var(--spacing-xl);
+    position: relative;
+}
+
+.mp-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: var(--shadow-md);
+    object-fit: cover;
+    margin-bottom: var(--spacing-md);
+}
+
+.mp-name {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
+}
+
+.mp-party-badge {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.mp-details {
+    padding: var(--spacing-xl);
+}
+
+.mp-detail-item {
+    display: flex;
+    align-items: start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.mp-detail-item:last-child {
+    border-bottom: none;
+}
+
+.mp-detail-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--gray-100);
+    border-radius: var(--radius-md);
+    color: var(--gray-600);
+}
+
+/* Email Composer */
+.email-composer {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.composer-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.composer-header h3 {
+    margin: 0;
+}
+
+.topic-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.topic-card {
+    padding: var(--spacing-md);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    background-color: white;
+}
+
+.topic-card:hover {
+    border-color: var(--primary-light);
+    background-color: var(--primary-light-bg);
+}
+
+.topic-card.selected {
+    border-color: var(--primary-color);
+    background-color: var(--primary-light-bg);
+}
+
+.reference-input {
+    background-color: var(--gray-50);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.email-preview {
+    background-color: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    min-height: 300px;
+}
+
+.ai-generating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: var(--gray-500);
+}
+
+.ai-generating .spinner-border {
+    margin-right: var(--spacing-md);
+}
+
+/* Party Colors */
+.party-labour { background-color: #dc2626; }
+.party-conservative { background-color: #1e40af; }
+.party-lib-dem { background-color: #f59e0b; }
+.party-snp { background-color: #facc15; color: var(--gray-900); }
+.party-green { background-color: #22c55e; }
+.party-plaid-cymru { background-color: #059669; }
+.party-dup { background-color: #d946ef; }
+.party-sinn-fein { background-color: #10b981; }
+.party-alliance { background-color: #facc15; color: var(--gray-900); }
+.party-sdlp { background-color: #f97316; }
+.party-independent { background-color: var(--gray-500); } 
