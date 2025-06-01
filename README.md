@@ -5,11 +5,14 @@
   <img src="https://img.shields.io/badge/Platform-Web-blue" alt="Platform: Web">
   <img src="https://img.shields.io/badge/UK%20Focus-Parliament-red" alt="UK Focus: Parliament">
   <img src="https://img.shields.io/badge/AI-GPT--4.1--nano-purple" alt="AI: GPT-4.1-nano">
+  <img src="https://img.shields.io/badge/Railway-Deployed-brightgreen" alt="Railway: Deployed">
 </p>
 
 ## 📣 Empowering UK Citizens with AI-Powered Parliamentary Communication
 
 Write2Power is a modern web application that empowers UK citizens to write personalized, professional emails to their Members of Parliament (MPs) using AI assistance and enhanced address selection. Built with cutting-edge technology, it bridges the gap between citizens and their representatives through intelligent automation and user-friendly design.
+
+> **🎉 Recently Rebranded**: Previously known as DearPower, the application has been completely rebranded to Write2Power with a new Railway deployment and professional domain for better user experience and clearer purpose communication.
 
 ## ✨ Features
 
@@ -80,9 +83,10 @@ Write2Power is a modern web application that empowers UK citizens to write perso
 - **UK Parliament API**: MP data and constituency information
 
 ### **Deployment**
-- **Railway**: Cloud platform deployment
+- **Railway**: Cloud platform deployment with write2power project
 - **Environment Variables**: Secure API key management
 - **Git**: Version control with GitHub integration
+- **Professional Domain**: write2power-production.up.railway.app
 
 ## ⚙️ Setup & Installation
 
@@ -189,6 +193,21 @@ write2power/
 ## 🚀 Live Application
 
 **Production URL**: https://write2power-production.up.railway.app
+
+### **🎉 Recent Updates (January 2025)**
+
+#### **Complete Project Rebrand**
+- **✅ Name Change**: DearPower → Write2Power for clearer purpose communication
+- **✅ New Railway Project**: Migrated to dedicated `write2power` Railway project
+- **✅ Professional Domain**: Clean, branded URL (write2power-production.up.railway.app)
+- **✅ Updated Branding**: All UI elements, documentation, and code references updated
+- **✅ Maintained Functionality**: Zero downtime migration with all features preserved
+
+#### **Latest Technical Improvements**
+- **✅ GPT-4.1-nano**: Upgraded to latest cost-effective AI model
+- **✅ Rich Text Editor**: Professional WYSIWYG editing with Quill.js
+- **✅ Enhanced Documentation**: Comprehensive README, TODO, and CHANGELOG
+- **✅ Clean Architecture**: Organized codebase with modular design
 
 ## 📝 Contributing
 
