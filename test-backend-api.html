@@ -108,8 +108,8 @@
         </div>
         
         <div class="form-group">
-            <label for="testReference">Reference (optional):</label>
-            <textarea id="testReference" rows="2" placeholder="https://example.com/article"></textarea>
+            <label for="testReference">Reference URL (optional):</label>
+            <textarea id="testReference" rows="2" placeholder="https://www.bbc.com/news/health-article-example">https://www.bbc.com/news/health-67890123</textarea>
         </div>
         
         <button onclick="testBackendAPI()" id="testApiBtn">Test Backend API</button>
@@ -189,7 +189,19 @@
                 
                 if (response.ok) {
                     resultDiv.className = 'result success';
-                    resultDiv.textContent = `✅ Backend API Success!\n\nGenerated Email:\n${data.emailContent}`;
+                    let resultText = `✅ Backend API Success!\n\n`;
+
+                    if (data.articleFetched) {
+                        resultText += `📰 Article Successfully Fetched:\n`;
+                        resultText += `Title: ${data.articleTitle}\n`;
+                        resultText += `URL: ${data.articleUrl}\n\n`;
+                    } else if (data.articleUrl) {
+                        resultText += `⚠️ Article could not be fetched from: ${data.articleUrl}\n`;
+                        resultText += `Email generated without article content.\n\n`;
+                    }
+
+                    resultText += `Generated Email:\n${data.emailContent}`;
+                    resultDiv.textContent = resultText;
                 } else {
                     resultDiv.className = 'result error';
                     resultDiv.textContent = `❌ Backend API Error: ${data.error}`;
