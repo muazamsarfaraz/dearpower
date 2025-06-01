@@ -135,18 +135,16 @@ app.post('/api/generate-email', async (req, res) => {
       }
     }
 
-    // Prepare the prompt for o1-mini
-    let combinedPrompt = `You are an expert at writing effective, polite, and persuasive letters to Members of Parliament in the UK.
+    // Prepare the prompt for GPT-4.1-nano
+    let combinedPrompt = `Write an email to ${mp.name}, MP for ${constituency}, about ${topic}.
 
-Write a formal but personable email that:
-- Is respectful and professional
-- Clearly states the issue and why it matters
-- Includes specific asks or actions
-- References the constituent's connection to the constituency
-- Is concise (under 300 words)
-${reference ? '- Incorporates the provided reference material appropriately and references specific points from the article' : ''}
-
-Please write an email to ${mp.name}, MP for ${constituency}, about ${topic}.`;
+Requirements:
+- Address the MP respectfully and professionally
+- Clearly explain the issue and why it matters to the constituency
+- Include specific asks or actions for the MP to take
+- Reference that this is from a constituent in ${constituency}
+- Keep it concise (under 300 words)
+${reference ? '- Incorporate the provided reference material and cite specific points from the article' : ''}`;
 
     if (articleContent) {
       combinedPrompt += `
@@ -193,11 +191,16 @@ Please replace [Your Name] with "${fullName || '[Your Name]'}" and [Your Address
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'o1-mini',
+        model: 'gpt-4.1-nano',
         messages: [
+          {
+            role: 'system',
+            content: 'You are an expert at writing effective, polite, and persuasive letters to Members of Parliament in the UK. Write formal but personable emails that are respectful, professional, clearly state issues, include specific asks, reference the constituent\'s connection to the constituency, and are concise (under 300 words).'
+          },
           { role: 'user', content: combinedPrompt }
         ],
-        max_completion_tokens: 2000
+        max_tokens: 1000,
+        temperature: 0.7
       })
     });
 
