@@ -310,6 +310,72 @@
     margin-right: var(--spacing-md);
 }
 
+/* Email Content Rendering */
+.email-content-html {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--gray-800);
+}
+
+.email-content-html h1,
+.email-content-html h2,
+.email-content-html h3 {
+    color: var(--gray-900);
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.email-content-html h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.email-content-html h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.email-content-html h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.email-content-html p {
+    margin-bottom: var(--spacing-md);
+}
+
+.email-content-html strong {
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.email-content-html em {
+    font-style: italic;
+}
+
+.email-content-html ol,
+.email-content-html ul {
+    margin-bottom: var(--spacing-md);
+    padding-left: var(--spacing-lg);
+}
+
+.email-content-html li {
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Email Edit Mode */
+#email-edit-textarea {
+    resize: vertical;
+    min-height: 300px;
+}
+
+.email-content-display {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    background-color: var(--gray-50);
+}
+
 /* Party Colors */
 .party-labour { background-color: #dc2626; }
 .party-conservative { background-color: #1e40af; }

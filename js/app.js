@@ -395,6 +395,59 @@ class DearPowerApp {
     }
 }
 
+// Email editing functions (global scope for onclick handlers)
+window.toggleEmailEdit = function() {
+    const previewDisplay = document.getElementById('email-preview-display');
+    const editMode = document.getElementById('email-edit-mode');
+
+    previewDisplay.classList.add('d-none');
+    editMode.classList.remove('d-none');
+
+    // Focus on textarea
+    document.getElementById('email-edit-textarea').focus();
+};
+
+window.saveEmailEdit = function() {
+    const textarea = document.getElementById('email-edit-textarea');
+    const newContent = textarea.value;
+
+    // Update the app's email content
+    if (window.dearPowerApp) {
+        window.dearPowerApp.userData.emailContent = newContent;
+    }
+
+    // Update the preview display with new content
+    const htmlContent = Components.markdownToHtml(newContent);
+    document.querySelector('.email-content-html').innerHTML = htmlContent;
+
+    // Switch back to preview mode
+    const previewDisplay = document.getElementById('email-preview-display');
+    const editMode = document.getElementById('email-edit-mode');
+
+    editMode.classList.add('d-none');
+    previewDisplay.classList.remove('d-none');
+
+    // Show success message
+    if (window.dearPowerApp) {
+        window.dearPowerApp.showSuccess('Email updated successfully!');
+    }
+};
+
+window.cancelEmailEdit = function() {
+    // Reset textarea to original content
+    const textarea = document.getElementById('email-edit-textarea');
+    if (window.dearPowerApp) {
+        textarea.value = window.dearPowerApp.userData.emailContent;
+    }
+
+    // Switch back to preview mode
+    const previewDisplay = document.getElementById('email-preview-display');
+    const editMode = document.getElementById('email-edit-mode');
+
+    editMode.classList.add('d-none');
+    previewDisplay.classList.remove('d-none');
+};
+
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     window.dearPowerApp = new DearPowerApp();

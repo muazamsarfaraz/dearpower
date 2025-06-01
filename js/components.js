@@ -259,12 +259,70 @@ export const Components = {
     
     // Email preview
     emailPreview(content) {
+        // Convert markdown to HTML for display
+        const htmlContent = this.markdownToHtml(content);
+
         return `
             <div class="email-preview">
                 <h5 class="mb-3">Generated Email</h5>
-                <div class="email-content" style="white-space: pre-wrap;">${this.escapeHtml(content)}</div>
+
+                <!-- Preview Mode -->
+                <div id="email-preview-display" class="email-content-display">
+                    <div class="email-content-html">${htmlContent}</div>
+                    <div class="mt-3">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="toggleEmailEdit()">
+                            <i class="fas fa-edit me-1"></i>Edit Email
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Edit Mode -->
+                <div id="email-edit-mode" class="d-none">
+                    <label class="form-label">Edit your email:</label>
+                    <textarea
+                        id="email-edit-textarea"
+                        class="form-control"
+                        rows="12"
+                        style="font-family: monospace; font-size: 14px;"
+                    >${this.escapeHtml(content)}</textarea>
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm me-2" onclick="saveEmailEdit()">
+                            <i class="fas fa-save me-1"></i>Save Changes
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="cancelEmailEdit()">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </button>
+                    </div>
+                </div>
             </div>
         `;
+    },
+
+    // Convert basic markdown to HTML
+    markdownToHtml(markdown) {
+        return markdown
+            // Bold text **text** -> <strong>text</strong>
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            // Italic text *text* -> <em>text</em>
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            // Headers ### text -> <h3>text</h3>
+            .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+            .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+            .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+            // Line breaks
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n/g, '<br>')
+            // Wrap in paragraphs
+            .replace(/^(.)/gm, '<p>$1')
+            .replace(/(.)$/gm, '$1</p>')
+            // Clean up multiple paragraph tags
+            .replace(/<\/p><p>/g, '</p>\n<p>')
+            // Lists (basic support)
+            .replace(/^\d+\.\s+(.*$)/gm, '<li>$1</li>')
+            .replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>')
+            // Clean up any double paragraph wrapping
+            .replace(/<p><h([1-6])>/g, '<h$1>')
+            .replace(/<\/h([1-6])><\/p>/g, '</h$1>');
     },
     
     // Review screen
@@ -278,7 +336,7 @@ export const Components = {
                         <strong>To:</strong> ${userData.mp.name} (${userData.mp.email})
                     </div>
                     <div class="card-body">
-                        <div class="email-content" style="white-space: pre-wrap;">${this.escapeHtml(userData.emailContent)}</div>
+                        <div class="email-content">${this.markdownToHtml(userData.emailContent)}</div>
                     </div>
                 </div>
                 
