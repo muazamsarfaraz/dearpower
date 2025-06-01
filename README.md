@@ -1,4 +1,4 @@
-# DearPower 🏛️
+# Write2Power 🏛️
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Production%20Ready-green" alt="Status: Production Ready">
@@ -9,7 +9,7 @@
 
 ## 📣 Empowering UK Citizens with AI-Powered Parliamentary Communication
 
-DearPower is a modern web application that empowers UK citizens to write personalized, professional emails to their Members of Parliament (MPs) using AI assistance and enhanced address selection. Built with cutting-edge technology, it bridges the gap between citizens and their representatives through intelligent automation and user-friendly design.
+Write2Power is a modern web application that empowers UK citizens to write personalized, professional emails to their Members of Parliament (MPs) using AI assistance and enhanced address selection. Built with cutting-edge technology, it bridges the gap between citizens and their representatives through intelligent automation and user-friendly design.
 
 ## ✨ Features
 
@@ -95,8 +95,8 @@ DearPower is a modern web application that empowers UK citizens to write persona
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/muazamsarfaraz/dearpower.git
-   cd dearpower
+   git clone https://github.com/muazamsarfaraz/write2power.git
+   cd write2power
    ```
 
 2. **Install dependencies**
@@ -142,7 +142,7 @@ npm run start
 ## 📁 Project Structure
 
 ```
-dearpower/
+write2power/
 ├── css/                    # Stylesheets
 │   ├── main.css           # Main application styles
 │   ├── components.css     # Component-specific styles

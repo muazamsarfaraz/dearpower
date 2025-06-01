@@ -1,4 +1,4 @@
-# DearPower TODO List 🏛️
+# Write2Power TODO List 🏛️
 
 ## ✅ **COMPLETED FEATURES** (Production Ready)
 

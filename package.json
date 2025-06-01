@@ -1,7 +1,7 @@
 {
-  "name": "dearpower",
+  "name": "write2power",
   "version": "1.0.0",
-  "description": "DearPower - A platform to help citizens contact their MPs",
+  "description": "Write2Power - A platform to help citizens contact their MPs",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

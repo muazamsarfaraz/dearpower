@@ -4,7 +4,7 @@ import { Components } from './components.js';
 import { MapboxHelper } from './mapbox.js';
 import { OpenAIHelper } from './openai.js';
 
-class DearPowerApp {
+class Write2PowerApp {
     constructor() {
         this.currentStep = 1;
         this.userData = {
@@ -164,7 +164,7 @@ class DearPowerApp {
                         ${nearbyAddresses.map((addr, index) => `
                             <button type="button" class="list-group-item list-group-item-action"
                                     data-address="${encodeURIComponent(JSON.stringify(addr))}"
-                                    onclick="dearPowerApp.selectPreciseAddress(this)">
+                                    onclick="write2PowerApp.selectPreciseAddress(this)">
                                 <i class="fas fa-map-marker-alt me-2 text-primary"></i>
                                 ${addr.place_name}
                             </button>
@@ -412,8 +412,8 @@ window.toggleEmailEdit = function() {
     }
 
     // Set content from current email
-    if (window.dearPowerApp && window.dearPowerApp.userData.emailContent) {
-        const htmlContent = Components.markdownToHtml(window.dearPowerApp.userData.emailContent);
+    if (window.write2PowerApp && window.write2PowerApp.userData.emailContent) {
+        const htmlContent = Components.markdownToHtml(window.write2PowerApp.userData.emailContent);
         quillEditor.root.innerHTML = htmlContent;
     }
 
@@ -451,8 +451,8 @@ window.saveRichTextEdit = function() {
     const markdownContent = htmlToMarkdown(htmlContent);
 
     // Update the app's email content
-    if (window.dearPowerApp) {
-        window.dearPowerApp.userData.emailContent = markdownContent;
+    if (window.write2PowerApp) {
+        window.write2PowerApp.userData.emailContent = markdownContent;
     }
 
     // Update the preview display with new content
@@ -466,15 +466,15 @@ window.saveRichTextEdit = function() {
     previewDisplay.classList.remove('d-none');
 
     // Show success message
-    if (window.dearPowerApp) {
-        window.dearPowerApp.showSuccess('Email updated successfully!');
+    if (window.write2PowerApp) {
+        window.write2PowerApp.showSuccess('Email updated successfully!');
     }
 };
 
 window.cancelRichTextEdit = function() {
     // Reset editor to original content
-    if (quillEditor && window.dearPowerApp && window.dearPowerApp.userData.emailContent) {
-        const htmlContent = Components.markdownToHtml(window.dearPowerApp.userData.emailContent);
+    if (quillEditor && window.write2PowerApp && window.write2PowerApp.userData.emailContent) {
+        const htmlContent = Components.markdownToHtml(window.write2PowerApp.userData.emailContent);
         quillEditor.root.innerHTML = htmlContent;
     }
 
@@ -566,5 +566,5 @@ function htmlToMarkdown(html) {
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.dearPowerApp = new DearPowerApp();
+    window.write2PowerApp = new Write2PowerApp();
 });

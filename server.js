@@ -241,6 +241,6 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`DearPower server running on port ${PORT}`);
+  console.log(`Write2Power server running on port ${PORT}`);
   console.log(`Visit: http://localhost:${PORT}`);
 });
