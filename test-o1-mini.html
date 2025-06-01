@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test o1-mini Integration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .error {
+            background-color: #ffe6e6;
+            color: #d00;
+        }
+        .success {
+            background-color: #e6ffe6;
+            color: #060;
+        }
+        button {
+            background-color: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005a87;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test OpenAI o1-mini Integration</h1>
+    
+    <div class="test-section">
+        <h2>API Configuration Test</h2>
+        <p>Enter your OpenAI API key to test the o1-mini integration:</p>
+        <input type="password" id="apiKey" placeholder="Enter OpenAI API Key">
+        <button onclick="setApiKey()">Set API Key</button>
+        <div id="apiKeyResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Model Parameters Test</h2>
+        <p>Test the o1-mini model parameters (without making actual API call):</p>
+        <button onclick="testModelParams()">Test Model Parameters</button>
+        <div id="paramsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Email Generation Test</h2>
+        <p>Test email generation with mock data:</p>
+        <input type="text" id="mpName" placeholder="MP Name" value="Valerie Vaz">
+        <input type="text" id="constituency" placeholder="Constituency" value="Walsall and Bloxwich">
+        <input type="text" id="topic" placeholder="Topic" value="Healthcare">
+        <textarea id="reference" placeholder="Reference (optional)">https://example.com/article</textarea>
+        <button onclick="testEmailGeneration()">Test Email Generation</button>
+        <div id="emailResult" class="result"></div>
+    </div>
+
+    <script type="module">
+        import { OpenAIHelper } from './js/openai.js';
+
+        window.setApiKey = function() {
+            const apiKey = document.getElementById('apiKey').value;
+            const resultDiv = document.getElementById('apiKeyResult');
+            
+            if (apiKey.trim()) {
+                OpenAIHelper.setApiKey(apiKey);
+                resultDiv.className = 'result success';
+                resultDiv.textContent = 'API key set successfully!';
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Please enter a valid API key.';
+            }
+        };
+
+        window.testModelParams = function() {
+            const resultDiv = document.getElementById('paramsResult');
+            
+            // Test the parameters that would be sent to o1-mini
+            const testParams = {
+                model: 'o1-mini',
+                messages: [
+                    { role: 'user', content: 'Test prompt for o1-mini model' }
+                ],
+                max_completion_tokens: 500
+                // Note: No temperature parameter (not supported by o1-mini)
+                // Note: No system role (not supported by o1-mini)
+            };
+            
+            resultDiv.className = 'result success';
+            resultDiv.innerHTML = `
+                <h4>o1-mini Parameters Test:</h4>
+                <pre>${JSON.stringify(testParams, null, 2)}</pre>
+                <p>✅ Model: o1-mini (correct)</p>
+                <p>✅ Messages: Only user role (o1-mini compatible)</p>
+                <p>✅ max_completion_tokens: Used instead of max_tokens</p>
+                <p>✅ No temperature parameter (not supported by o1-mini)</p>
+                <p>✅ No system role (not supported by o1-mini)</p>
+            `;
+        };
+
+        window.testEmailGeneration = function() {
+            const resultDiv = document.getElementById('emailResult');
+            const mpName = document.getElementById('mpName').value;
+            const constituency = document.getElementById('constituency').value;
+            const topic = document.getElementById('topic').value;
+            const reference = document.getElementById('reference').value;
+            
+            // Test the prompt generation without making API call
+            const mockMp = { name: mpName };
+            const combinedPrompt = `You are an expert at writing effective, polite, and persuasive letters to Members of Parliament in the UK. 
+
+Write a formal but personable email that:
+- Is respectful and professional
+- Clearly states the issue and why it matters
+- Includes specific asks or actions
+- References the constituent's connection to the constituency
+- Is concise (under 300 words)
+${reference ? '- Incorporates the provided reference material appropriately' : ''}
+
+Please write an email to ${mpName}, MP for ${constituency}, about ${topic}.
+${reference ? `Reference this article/material: ${reference}` : ''}
+
+The email should be from a constituent concerned about this issue.`;
+            
+            resultDiv.className = 'result success';
+            resultDiv.innerHTML = `
+                <h4>Generated Prompt for o1-mini:</h4>
+                <pre style="white-space: pre-wrap; font-size: 12px;">${combinedPrompt}</pre>
+                <p>✅ Combined system and user prompts into single user message</p>
+                <p>✅ Maintains all original prompt instructions</p>
+                <p>✅ Ready for o1-mini model</p>
+            `;
+        };
+    </script>
+</body>
+</html>

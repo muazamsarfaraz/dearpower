@@ -6,7 +6,7 @@ DearPower is a civic engagement platform that helps UK citizens contact their MP
 ## Key Features
 1. **Address/Postcode Lookup** - Using Mapbox for accurate UK address search
 2. **MP Discovery** - Find your MP based on your constituency
-3. **AI-Powered Email Generation** - Use OpenAI GPT-4 Mini to help compose effective emails
+3. **AI-Powered Email Generation** - Use OpenAI o1-mini to help compose effective emails
 4. **Reference Integration** - Allow users to include articles/references in their communications
 
 ## Technical Stack

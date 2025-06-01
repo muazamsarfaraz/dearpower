@@ -1,70 +1,43 @@
 // OpenAI helper module for email generation
 
 export const OpenAIHelper = {
-    // Note: In production, this should be handled by a backend service
-    // Never expose API keys in frontend code
-    API_KEY: '', // Will need to be configured
-    API_URL: 'https://api.openai.com/v1/chat/completions',
-    
-    // Generate email content using GPT-4 Mini
+    // Backend API URL for email generation
+    API_URL: '/api/generate-email',
+
+    // Generate email content using OpenAI o1-mini via backend
     async generateEmail({ mp, topic, reference, constituency }) {
-        // For demo purposes, we'll create a template-based email
-        // In production, this would call the OpenAI API through a backend service
-        
         try {
-            // If API key is configured, use OpenAI
-            if (this.API_KEY) {
-                return await this.callOpenAI({ mp, topic, reference, constituency });
-            }
-            
-            // Otherwise, use template
-            return this.generateTemplateEmail({ mp, topic, reference, constituency });
+            // Try to generate email via backend API
+            return await this.callBackendAPI({ mp, topic, reference, constituency });
         } catch (error) {
-            console.error('Error generating email:', error);
+            console.error('Error generating email via backend:', error);
             // Fallback to template
             return this.generateTemplateEmail({ mp, topic, reference, constituency });
         }
     },
     
-    // Call OpenAI API (should be done through backend in production)
-    async callOpenAI({ mp, topic, reference, constituency }) {
-        const systemPrompt = `You are an expert at writing effective, polite, and persuasive letters to Members of Parliament in the UK. 
-        Write a formal but personable email that:
-        - Is respectful and professional
-        - Clearly states the issue and why it matters
-        - Includes specific asks or actions
-        - References the constituent's connection to the constituency
-        - Is concise (under 300 words)
-        ${reference ? '- Incorporates the provided reference material appropriately' : ''}`;
-        
-        const userPrompt = `Write an email to ${mp.name}, MP for ${constituency}, about ${topic}.
-        ${reference ? `Reference this article/material: ${reference}` : ''}
-        
-        The email should be from a constituent concerned about this issue.`;
-        
+    // Call backend API for email generation
+    async callBackendAPI({ mp, topic, reference, constituency }) {
         const response = await fetch(this.API_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.API_KEY}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'gpt-4-mini',
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: userPrompt }
-                ],
-                temperature: 0.7,
-                max_tokens: 500
+                mp,
+                topic,
+                reference,
+                constituency
             })
         });
-        
+
         if (!response.ok) {
-            throw new Error('OpenAI API request failed');
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+            throw new Error(`Backend API request failed: ${errorData.error || response.statusText}`);
         }
-        
+
         const data = await response.json();
-        return data.choices[0].message.content;
+        return data.emailContent;
     },
     
     // Generate template-based email
@@ -186,10 +159,5 @@ Yours sincerely,
         };
         
         return templates[topic] || templates['Other'];
-    },
-    
-    // Set API key (should be done through secure backend configuration)
-    setApiKey(key) {
-        this.API_KEY = key;
     }
-}; 
+};
