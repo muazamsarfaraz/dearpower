@@ -5,10 +5,10 @@ export const OpenAIHelper = {
     API_URL: '/api/generate-email',
 
     // Generate email content using OpenAI o1-mini via backend
-    async generateEmail({ mp, topic, reference, constituency }) {
+    async generateEmail({ mp, topic, reference, constituency, fullName, address }) {
         try {
             // Try to generate email via backend API
-            return await this.callBackendAPI({ mp, topic, reference, constituency });
+            return await this.callBackendAPI({ mp, topic, reference, constituency, fullName, address });
         } catch (error) {
             console.error('Error generating email via backend:', error);
             // Fallback to template
@@ -17,7 +17,7 @@ export const OpenAIHelper = {
     },
     
     // Call backend API for email generation
-    async callBackendAPI({ mp, topic, reference, constituency }) {
+    async callBackendAPI({ mp, topic, reference, constituency, fullName, address }) {
         const response = await fetch(this.API_URL, {
             method: 'POST',
             headers: {
@@ -27,7 +27,9 @@ export const OpenAIHelper = {
                 mp,
                 topic,
                 reference,
-                constituency
+                constituency,
+                fullName,
+                address
             })
         });
 

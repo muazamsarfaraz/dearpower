@@ -165,13 +165,41 @@ export const Components = {
                     </div>
                 </div>
                 
+                <div class="personal-details mb-4">
+                    <h5>Your Details</h5>
+                    <p class="text-muted">This information will be included in your email</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="user-full-name" class="form-label">Full Name *</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="user-full-name"
+                                placeholder="Enter your full name"
+                                required
+                            >
+                        </div>
+                        <div class="col-md-6">
+                            <label for="user-address" class="form-label">Address</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="user-address"
+                                value="${userData.address || ''}"
+                                readonly
+                                placeholder="Address from previous step"
+                            >
+                        </div>
+                    </div>
+                </div>
+
                 <div class="reference-input">
                     <h5>Reference Material (Optional)</h5>
                     <p class="text-muted">Add a link to an article or reference to support your message</p>
-                    <input 
-                        type="url" 
-                        class="form-control" 
-                        id="reference-link" 
+                    <input
+                        type="url"
+                        class="form-control"
+                        id="reference-link"
                         placeholder="https://example.com/article"
                     >
                 </div>

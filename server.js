@@ -99,7 +99,7 @@ async function fetchArticleContent(url) {
 // API endpoint for generating emails with OpenAI
 app.post('/api/generate-email', async (req, res) => {
   try {
-    const { mp, topic, reference, constituency } = req.body;
+    const { mp, topic, reference, constituency, fullName, address } = req.body;
 
     // Validate required fields
     if (!mp || !topic || !constituency) {
@@ -159,6 +159,24 @@ Reference this article/material: ${reference}`;
     combinedPrompt += `
 
 The email should be from a constituent concerned about this issue.`;
+
+    // Add user details to the prompt if provided
+    if (fullName || address) {
+      combinedPrompt += `
+
+User Details to include in the email signature:`;
+      if (fullName) {
+        combinedPrompt += `
+- Full Name: ${fullName}`;
+      }
+      if (address) {
+        combinedPrompt += `
+- Address: ${address}`;
+      }
+      combinedPrompt += `
+
+Please replace [Your Name] with "${fullName || '[Your Name]'}" and [Your Address] with "${address || '[Your Address]'}" in the email signature.`;
+    }
 
     // Call OpenAI API
     const response = await fetch('https://api.openai.com/v1/chat/completions', {

@@ -87,6 +87,13 @@ class DearPowerApp {
                 break;
             case 3:
                 contentArea.innerHTML = Components.emailComposerScreen(this.userData);
+                // Add event listener for name input validation
+                setTimeout(() => {
+                    const nameInput = document.getElementById('user-full-name');
+                    if (nameInput) {
+                        nameInput.addEventListener('input', () => this.validateEmailForm());
+                    }
+                }, 100);
                 break;
             case 4:
                 contentArea.innerHTML = Components.reviewScreen(this.userData);
@@ -196,35 +203,69 @@ class DearPowerApp {
         }
     }
     
+    handleAddressSelection(dataset) {
+        // This method handles address selection from search results
+        // Address data is already stored in geocoder result handler
+        console.log('Address selected:', dataset);
+    }
+
     handleTopicSelection(target) {
         // Remove previous selection
         document.querySelectorAll('.topic-card').forEach(card => {
             card.classList.remove('selected');
         });
-        
+
         // Add selection
         target.classList.add('selected');
         this.userData.topic = target.dataset.topic;
-        
-        // Enable generate button
-        document.getElementById('generate-email-btn').disabled = false;
+
+        // Enable generate button if name is also provided
+        this.validateEmailForm();
+    }
+
+    validateEmailForm() {
+        const nameInput = document.getElementById('user-full-name');
+        const generateBtn = document.getElementById('generate-email-btn');
+
+        if (generateBtn && nameInput) {
+            const hasName = nameInput.value.trim().length > 0;
+            const hasTopic = this.userData.topic;
+            generateBtn.disabled = !(hasName && hasTopic);
+        }
     }
     
     async generateEmail() {
+        // Capture user inputs
         const referenceInput = document.getElementById('reference-link');
+        const nameInput = document.getElementById('user-full-name');
+
         this.userData.reference = referenceInput?.value || '';
-        
+        this.userData.fullName = nameInput?.value.trim() || '';
+
+        // Validate required fields
+        if (!this.userData.fullName) {
+            this.showError('Please enter your full name before generating the email.');
+            return;
+        }
+
+        if (!this.userData.topic) {
+            this.showError('Please select a topic before generating the email.');
+            return;
+        }
+
         // Show generating state
         const previewContainer = document.getElementById('email-preview-container');
         previewContainer.innerHTML = Components.aiGenerating();
-        
+
         try {
             // Generate email with OpenAI
             const emailContent = await OpenAIHelper.generateEmail({
                 mp: this.userData.mp,
                 topic: this.userData.topic,
                 reference: this.userData.reference,
-                constituency: this.userData.constituency
+                constituency: this.userData.constituency,
+                fullName: this.userData.fullName,
+                address: this.userData.address
             });
             
             this.userData.emailContent = emailContent;
@@ -266,6 +307,7 @@ class DearPowerApp {
             mp: null,
             topic: null,
             reference: null,
+            fullName: null,
             emailContent: null
         };
         this.loadStep(1);
