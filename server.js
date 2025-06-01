@@ -96,6 +96,13 @@ async function fetchArticleContent(url) {
   }
 }
 
+// API endpoint to get configuration (including Mapbox token)
+app.get('/api/config', (req, res) => {
+  res.json({
+    mapboxToken: process.env.MAPBOX_ACCESS_TOKEN
+  });
+});
+
 // API endpoint for generating emails with OpenAI
 app.post('/api/generate-email', async (req, res) => {
   try {

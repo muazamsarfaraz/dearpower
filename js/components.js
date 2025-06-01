@@ -53,11 +53,30 @@ export const Components = {
                 <p class="text-center text-muted mb-5">
                     Enter your address or postcode to find your local Member of Parliament
                 </p>
-                
+
                 <div class="card">
                     <div class="card-body p-4">
                         <div id="geocoder-container" class="mb-4"></div>
                         <div id="map-container" class="map-preview"></div>
+
+                        <!-- Address refinement section -->
+                        <div id="address-refinement" class="mt-4 d-none">
+                            <h6 class="mb-3">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                Select your exact address
+                            </h6>
+                            <p class="text-muted small mb-3">
+                                Click on the map or select from nearby addresses to get your full door address
+                            </p>
+                            <div id="nearby-addresses" class="mb-3"></div>
+                            <div id="selected-full-address" class="d-none">
+                                <div class="alert alert-success">
+                                    <h6 class="mb-2"><i class="fas fa-check-circle me-2"></i>Full Address Confirmed</h6>
+                                    <div id="confirmed-full-address-text"></div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="mp-info-container" class="mt-4 d-none"></div>
                         <div id="next-btn-container" class="text-center mt-4 ${showNextButton ? '' : 'd-none'}">
                             <button class="btn btn-primary" id="next-to-compose-btn" data-action="continue-to-compose">

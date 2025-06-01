@@ -42,9 +42,7 @@ class DearPowerApp {
             case 'start':
                 this.loadStep(2);
                 break;
-            case 'select-address':
-                this.handleAddressSelection(target.dataset);
-                break;
+
             case 'continue-to-compose':
                 this.loadStep(3);
                 break;
@@ -114,49 +112,104 @@ class DearPowerApp {
     }
     
     async initializeMapbox() {
-        const geocoder = await MapboxHelper.createGeocoder();
-        document.getElementById('geocoder-container').appendChild(geocoder.onAdd());
-        
-        // Initialize map
-        const map = await MapboxHelper.createMap('map-container');
-        
-        // Handle geocoder results
-        geocoder.on('result', async (e) => {
-            this.showLoading();
-            
-            // Store address data
-            this.userData.address = e.result.place_name;
-            this.userData.postcode = this.extractPostcode(e.result);
-            
-            // Update map
-            MapboxHelper.updateMapLocation(map, e.result.center);
-            
-            // Fetch MP data
-            await this.fetchMPData();
-            
-            this.hideLoading();
-        });
+        // Initialize Mapbox with enhanced address selection
+        this.mapboxHelper = new MapboxHelper();
+
+        // Set up the geocoder and map
+        await this.mapboxHelper.initializeGeocoderWithMap('geocoder-container', 'map-container');
+
+        // Listen for address selection events
+        this.mapboxHelper.onAddressSelected = (addressData) => {
+            this.handleMapboxAddressSelection(addressData);
+        };
+
+        // Listen for precise address selection events
+        this.mapboxHelper.onPreciseAddressSelected = (fullAddress) => {
+            this.handlePreciseAddressSelection(fullAddress);
+        };
     }
     
-    extractPostcode(result) {
-        console.log('Mapbox result:', result);
+    async handleMapboxAddressSelection(addressData) {
+        console.log('Address selected from Mapbox:', addressData);
 
-        // Extract postcode from Mapbox result
-        const postcodeContext = result.context?.find(c => c.id.includes('postcode'));
-        let postcode = postcodeContext?.text || '';
+        // Store basic address info
+        this.userData.address = addressData.place_name;
+        this.userData.postcode = this.extractPostcode(addressData.place_name);
 
-        // If no postcode found in context, try to extract from place_name
-        if (!postcode && result.place_name) {
-            // UK postcode regex pattern
-            const postcodeRegex = /\b[A-Z]{1,2}[0-9][A-Z0-9]?\s?[0-9][A-Z]{2}\b/i;
-            const match = result.place_name.match(postcodeRegex);
-            if (match) {
-                postcode = match[0].trim().toUpperCase();
-            }
+        // Show address refinement section
+        const refinementSection = document.getElementById('address-refinement');
+        refinementSection.classList.remove('d-none');
+
+        // Get nearby addresses for precise selection
+        await this.loadNearbyAddresses(addressData.center);
+
+        // Try to get MP data
+        if (this.userData.postcode) {
+            await this.fetchMPData();
         }
+    }
 
-        console.log('Extracted postcode:', postcode);
-        return postcode;
+    async loadNearbyAddresses(coordinates) {
+        const nearbyContainer = document.getElementById('nearby-addresses');
+        nearbyContainer.innerHTML = '<p class="text-muted">Loading nearby addresses...</p>';
+
+        try {
+            // Get nearby addresses using reverse geocoding
+            const nearbyAddresses = await this.mapboxHelper.getNearbyAddresses(coordinates);
+
+            if (nearbyAddresses.length > 0) {
+                nearbyContainer.innerHTML = `
+                    <label class="form-label small">Select your exact address:</label>
+                    <div class="list-group">
+                        ${nearbyAddresses.map((addr, index) => `
+                            <button type="button" class="list-group-item list-group-item-action"
+                                    data-address="${encodeURIComponent(JSON.stringify(addr))}"
+                                    onclick="dearPowerApp.selectPreciseAddress(this)">
+                                <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                                ${addr.place_name}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                nearbyContainer.innerHTML = '<p class="text-muted">No nearby addresses found. You can click on the map to select a precise location.</p>';
+            }
+        } catch (error) {
+            console.error('Error loading nearby addresses:', error);
+            nearbyContainer.innerHTML = '<p class="text-muted">Unable to load nearby addresses. You can click on the map to select a location.</p>';
+        }
+    }
+
+    selectPreciseAddress(button) {
+        const addressData = JSON.parse(decodeURIComponent(button.dataset.address));
+        this.handlePreciseAddressSelection(addressData.place_name);
+    }
+
+    handlePreciseAddressSelection(fullAddress) {
+        console.log('Precise address selected:', fullAddress);
+
+        // Update user data with full address
+        this.userData.address = fullAddress;
+        this.userData.postcode = this.extractPostcode(fullAddress);
+
+        // Show confirmation
+        const confirmedAddressText = document.getElementById('confirmed-full-address-text');
+        const selectedAddressDisplay = document.getElementById('selected-full-address');
+
+        confirmedAddressText.textContent = fullAddress;
+        selectedAddressDisplay.classList.remove('d-none');
+
+        // Fetch MP data if we don't have it yet
+        if (!this.userData.mp && this.userData.postcode) {
+            this.fetchMPData();
+        }
+    }
+
+    extractPostcode(address) {
+        // Extract UK postcode from address string
+        const postcodeRegex = /([A-Z]{1,2}[0-9][A-Z0-9]?\s?[0-9][A-Z]{2})/i;
+        const match = address.match(postcodeRegex);
+        return match ? match[1].toUpperCase() : null;
     }
     
     async fetchMPData() {
@@ -176,6 +229,20 @@ class DearPowerApp {
             console.log('Found constituency:', this.userData.constituency);
 
             // Get MP data
+            await this.fetchMPDataByConstituency();
+        } catch (error) {
+            console.error('Error fetching MP data:', error);
+            this.showError('Unable to find MP information for this address.');
+        }
+    }
+
+    async fetchMPDataByConstituency() {
+        if (!this.userData.constituency) {
+            console.log('No constituency available, skipping MP lookup');
+            return;
+        }
+
+        try {
             console.log('Looking up MP for constituency:', this.userData.constituency);
             const mpData = await API.getMPByConstituency(this.userData.constituency);
             this.userData.mp = mpData;
@@ -184,8 +251,8 @@ class DearPowerApp {
             // Update UI with MP info and show Next button
             this.displayMPInfo(true);
         } catch (error) {
-            console.error('Error fetching MP data:', error);
-            this.showError('Unable to find MP information for this address.');
+            console.error('Error fetching MP data by constituency:', error);
+            this.showError('Unable to find MP information for this constituency.');
         }
     }
     
@@ -203,11 +270,7 @@ class DearPowerApp {
         }
     }
     
-    handleAddressSelection(dataset) {
-        // This method handles address selection from search results
-        // Address data is already stored in geocoder result handler
-        console.log('Address selected:', dataset);
-    }
+
 
     handleTopicSelection(target) {
         // Remove previous selection
@@ -334,5 +397,5 @@ class DearPowerApp {
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.app = new DearPowerApp();
-}); 
+    window.dearPowerApp = new DearPowerApp();
+});
