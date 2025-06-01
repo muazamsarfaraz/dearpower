@@ -279,19 +279,81 @@ export const Components = {
                 <!-- Edit Mode -->
                 <div id="email-edit-mode" class="d-none">
                     <label class="form-label">Edit your email:</label>
+
+                    <!-- Formatting Toolbar -->
+                    <div class="formatting-toolbar mb-2">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-outline-secondary" onclick="insertMarkdown('**', '**')" title="Bold">
+                                <i class="fas fa-bold"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="insertMarkdown('*', '*')" title="Italic">
+                                <i class="fas fa-italic"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="insertMarkdown('### ', '')" title="Header">
+                                <i class="fas fa-heading"></i>
+                            </button>
+                        </div>
+
+                        <div class="btn-group btn-group-sm ms-2" role="group">
+                            <button type="button" class="btn btn-outline-secondary" onclick="insertList('numbered')" title="Numbered List">
+                                <i class="fas fa-list-ol"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="insertList('bullet')" title="Bullet List">
+                                <i class="fas fa-list-ul"></i>
+                            </button>
+                        </div>
+
+                        <div class="btn-group btn-group-sm ms-2" role="group">
+                            <button type="button" class="btn btn-outline-secondary" onclick="insertLineBreak()" title="Line Break">
+                                <i class="fas fa-paragraph"></i>
+                            </button>
+                        </div>
+
+                        <small class="text-muted ms-3">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Select text and click formatting buttons, or place cursor and click to insert
+                        </small>
+                    </div>
+
                     <textarea
                         id="email-edit-textarea"
                         class="form-control"
                         rows="12"
-                        style="font-family: monospace; font-size: 14px;"
+                        style="font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 14px; line-height: 1.5;"
+                        placeholder="Type your email content here. Use the toolbar above for formatting..."
                     >${this.escapeHtml(content)}</textarea>
-                    <div class="mt-3">
-                        <button class="btn btn-primary btn-sm me-2" onclick="saveEmailEdit()">
-                            <i class="fas fa-save me-1"></i>Save Changes
-                        </button>
-                        <button class="btn btn-outline-secondary btn-sm" onclick="cancelEmailEdit()">
-                            <i class="fas fa-times me-1"></i>Cancel
-                        </button>
+
+                    <div class="mt-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <button class="btn btn-primary btn-sm me-2" onclick="saveEmailEdit()">
+                                <i class="fas fa-save me-1"></i>Save Changes
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" onclick="cancelEmailEdit()">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-info btn-sm" onclick="previewMarkdown()" title="Preview formatting">
+                                <i class="fas fa-eye me-1"></i>Preview
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Preview -->
+                    <div id="markdown-preview" class="d-none mt-3">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-eye me-1"></i>Preview
+                                </small>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="hideMarkdownPreview()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="markdown-preview-content" class="email-content-html"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

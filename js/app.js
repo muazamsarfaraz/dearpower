@@ -440,12 +440,126 @@ window.cancelEmailEdit = function() {
         textarea.value = window.dearPowerApp.userData.emailContent;
     }
 
+    // Hide preview if visible
+    hideMarkdownPreview();
+
     // Switch back to preview mode
     const previewDisplay = document.getElementById('email-preview-display');
     const editMode = document.getElementById('email-edit-mode');
 
     editMode.classList.add('d-none');
     previewDisplay.classList.remove('d-none');
+};
+
+// Rich text formatting functions
+window.insertMarkdown = function(before, after) {
+    const textarea = document.getElementById('email-edit-textarea');
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+
+    let replacement;
+    if (selectedText) {
+        // Wrap selected text
+        replacement = before + selectedText + after;
+    } else {
+        // Insert placeholder text
+        const placeholder = before === '**' ? 'bold text' :
+                          before === '*' ? 'italic text' :
+                          before === '### ' ? 'Header Text' : 'text';
+        replacement = before + placeholder + after;
+    }
+
+    // Replace text
+    textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+
+    // Set cursor position
+    const newCursorPos = selectedText ? start + replacement.length : start + before.length;
+    textarea.setSelectionRange(newCursorPos, newCursorPos + (selectedText ? 0 : replacement.length - before.length - after.length));
+    textarea.focus();
+};
+
+window.insertList = function(type) {
+    const textarea = document.getElementById('email-edit-textarea');
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+
+    let replacement;
+    if (selectedText) {
+        // Convert selected lines to list
+        const lines = selectedText.split('\n');
+        const listItems = lines.map((line, index) => {
+            const trimmed = line.trim();
+            if (!trimmed) return '';
+            return type === 'numbered' ? `${index + 1}. ${trimmed}` : `- ${trimmed}`;
+        }).join('\n');
+        replacement = listItems;
+    } else {
+        // Insert sample list
+        if (type === 'numbered') {
+            replacement = '1. First item\n2. Second item\n3. Third item';
+        } else {
+            replacement = '- First item\n- Second item\n- Third item';
+        }
+    }
+
+    // Add line breaks if needed
+    const beforeText = textarea.value.substring(0, start);
+    const afterText = textarea.value.substring(end);
+    const needsBreakBefore = beforeText && !beforeText.endsWith('\n');
+    const needsBreakAfter = afterText && !afterText.startsWith('\n');
+
+    const finalReplacement = (needsBreakBefore ? '\n' : '') + replacement + (needsBreakAfter ? '\n' : '');
+
+    // Replace text
+    textarea.value = beforeText + finalReplacement + afterText;
+
+    // Set cursor position
+    const newCursorPos = start + finalReplacement.length;
+    textarea.setSelectionRange(newCursorPos, newCursorPos);
+    textarea.focus();
+};
+
+window.insertLineBreak = function() {
+    const textarea = document.getElementById('email-edit-textarea');
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const replacement = '\n\n';
+
+    // Insert line break
+    textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(start);
+
+    // Set cursor position
+    textarea.setSelectionRange(start + replacement.length, start + replacement.length);
+    textarea.focus();
+};
+
+window.previewMarkdown = function() {
+    const textarea = document.getElementById('email-edit-textarea');
+    const previewDiv = document.getElementById('markdown-preview');
+    const previewContent = document.getElementById('markdown-preview-content');
+
+    if (!textarea || !previewDiv || !previewContent) return;
+
+    // Convert markdown to HTML
+    const htmlContent = Components.markdownToHtml(textarea.value);
+    previewContent.innerHTML = htmlContent;
+
+    // Show preview
+    previewDiv.classList.remove('d-none');
+};
+
+window.hideMarkdownPreview = function() {
+    const previewDiv = document.getElementById('markdown-preview');
+    if (previewDiv) {
+        previewDiv.classList.add('d-none');
+    }
 };
 
 // Initialize app when DOM is ready

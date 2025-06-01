@@ -376,6 +376,88 @@
     background-color: var(--gray-50);
 }
 
+/* Rich Text Formatting Toolbar */
+.formatting-toolbar {
+    background-color: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.formatting-toolbar .btn {
+    border-color: var(--gray-300);
+    transition: all var(--transition-fast);
+}
+
+.formatting-toolbar .btn:hover {
+    background-color: var(--primary-light-bg);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.formatting-toolbar .btn:active,
+.formatting-toolbar .btn:focus {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    box-shadow: none;
+}
+
+.formatting-toolbar small {
+    font-size: 0.75rem;
+    line-height: 1.2;
+}
+
+/* Enhanced textarea styling */
+#email-edit-textarea {
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition-fast);
+}
+
+#email-edit-textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light-bg);
+    outline: none;
+}
+
+/* Markdown preview styling */
+#markdown-preview .card {
+    border: 1px solid var(--primary-light);
+    background-color: var(--primary-light-bg);
+}
+
+#markdown-preview .card-header {
+    background-color: var(--primary-color);
+    color: white;
+    border-bottom: 1px solid var(--primary-light);
+}
+
+#markdown-preview .card-body {
+    background-color: white;
+}
+
+/* Responsive toolbar */
+@media (max-width: 768px) {
+    .formatting-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .formatting-toolbar .btn-group {
+        justify-content: center;
+    }
+
+    .formatting-toolbar small {
+        text-align: center;
+        margin-top: var(--spacing-xs);
+    }
+}
+
 /* Party Colors */
 .party-labour { background-color: #dc2626; }
 .party-conservative { background-color: #1e40af; }
