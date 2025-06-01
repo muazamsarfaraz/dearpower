@@ -152,6 +152,7 @@
 .mapboxgl-ctrl-geocoder--input {
     font-family: inherit;
     padding: 0.75rem 1rem;
+    padding-left: 3rem; /* Increase left padding to add space after icon */
     font-size: 1rem;
 }
 

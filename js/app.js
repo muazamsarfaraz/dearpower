@@ -132,23 +132,48 @@ class DearPowerApp {
     }
     
     extractPostcode(result) {
+        console.log('Mapbox result:', result);
+
         // Extract postcode from Mapbox result
         const postcodeContext = result.context?.find(c => c.id.includes('postcode'));
-        return postcodeContext?.text || '';
+        let postcode = postcodeContext?.text || '';
+
+        // If no postcode found in context, try to extract from place_name
+        if (!postcode && result.place_name) {
+            // UK postcode regex pattern
+            const postcodeRegex = /\b[A-Z]{1,2}[0-9][A-Z0-9]?\s?[0-9][A-Z]{2}\b/i;
+            const match = result.place_name.match(postcodeRegex);
+            if (match) {
+                postcode = match[0].trim().toUpperCase();
+            }
+        }
+
+        console.log('Extracted postcode:', postcode);
+        return postcode;
     }
     
     async fetchMPData() {
-        if (!this.userData.postcode) return;
-        
+        console.log('fetchMPData called with postcode:', this.userData.postcode);
+
+        if (!this.userData.postcode) {
+            console.log('No postcode available, skipping MP lookup');
+            return;
+        }
+
         try {
+            console.log('Looking up constituency for postcode:', this.userData.postcode);
+
             // Get constituency from postcode
             const constituencyData = await API.getConstituencyByPostcode(this.userData.postcode);
             this.userData.constituency = constituencyData.result.name;
-            
+            console.log('Found constituency:', this.userData.constituency);
+
             // Get MP data
+            console.log('Looking up MP for constituency:', this.userData.constituency);
             const mpData = await API.getMPByConstituency(this.userData.constituency);
             this.userData.mp = mpData;
-            
+            console.log('Found MP:', mpData);
+
             // Update UI with MP info and show Next button
             this.displayMPInfo(true);
         } catch (error) {

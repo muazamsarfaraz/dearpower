@@ -56,7 +56,7 @@ export const API = {
             if (!mpResponse.ok) throw new Error('MP lookup failed');
             
             const mpData = await mpResponse.json();
-            const currentRepresentation = mpData.value.find(rep => rep.representation.endDate === null);
+            const currentRepresentation = mpData.value.find(rep => rep.representation.membershipEndDate === null);
             
             if (!currentRepresentation) throw new Error('No current MP found');
             
@@ -64,13 +64,23 @@ export const API = {
             const memberResponse = await fetch(
                 `${this.PARLIAMENT_BASE}/Members/${currentRepresentation.member.value.id}`
             );
-            
+
             if (!memberResponse.ok) throw new Error('Member details lookup failed');
-            
+
             const memberData = await memberResponse.json();
-            
+
+            // Get contact information
+            const contactResponse = await fetch(
+                `${this.PARLIAMENT_BASE}/Members/${currentRepresentation.member.value.id}/Contact`
+            );
+
+            let contactData = null;
+            if (contactResponse.ok) {
+                contactData = await contactResponse.json();
+            }
+
             // Format MP data
-            return this.formatMPData(memberData.value, constituency);
+            return this.formatMPData(memberData.value, constituency, contactData?.value);
         } catch (error) {
             console.error('Error fetching MP:', error);
             throw error;
@@ -78,23 +88,70 @@ export const API = {
     },
     
     // Format MP data for use in the app
-    formatMPData(memberData, constituency) {
+    formatMPData(memberData, constituency, contactData = null) {
         const latestParty = memberData.latestParty;
         const displayName = memberData.nameDisplayAs || memberData.nameFullTitle;
-        
-        // Extract contact information
+
+        // Extract contact information from API
         let email = '';
         let phone = '';
         let website = '';
-        let twitter = '';
-        
-        // Parse synopsis for contact details
-        if (memberData.synopsis) {
-            const emailMatch = memberData.synopsis.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-            if (emailMatch) email = emailMatch[1];
-            
-            const phoneMatch = memberData.synopsis.match(/(?:Tel:|Phone:)\s*([\d\s]+)/i);
-            if (phoneMatch) phone = phoneMatch[1].trim();
+        let socialMedia = {};
+        let parliamentaryAddress = {};
+        let constituencyAddress = {};
+
+        // Extract real contact information from Contact API
+        if (contactData && Array.isArray(contactData)) {
+            // Find different types of contacts
+            const parliamentaryOffice = contactData.find(contact => contact.type === 'Parliamentary office');
+            const constituencyOffice = contactData.find(contact => contact.type === 'Constituency office');
+            const websiteContact = contactData.find(contact => contact.type === 'Website');
+
+            // Use Parliamentary office email first, then constituency office
+            email = parliamentaryOffice?.email || constituencyOffice?.email || '';
+
+            // Use Parliamentary office phone first, then constituency office
+            phone = parliamentaryOffice?.phone || constituencyOffice?.phone || '';
+
+            // Extract website
+            website = websiteContact?.line1 || '';
+
+            // Extract Parliamentary office address
+            if (parliamentaryOffice) {
+                parliamentaryAddress = {
+                    line1: parliamentaryOffice.line1 || '',
+                    line2: parliamentaryOffice.line2 || '',
+                    line3: parliamentaryOffice.line3 || '',
+                    line4: parliamentaryOffice.line4 || '',
+                    line5: parliamentaryOffice.line5 || '',
+                    postcode: parliamentaryOffice.postcode || '',
+                    phone: parliamentaryOffice.phone || '',
+                    email: parliamentaryOffice.email || ''
+                };
+            }
+
+            // Extract Constituency office address
+            if (constituencyOffice) {
+                constituencyAddress = {
+                    line1: constituencyOffice.line1 || '',
+                    line2: constituencyOffice.line2 || '',
+                    line3: constituencyOffice.line3 || '',
+                    line4: constituencyOffice.line4 || '',
+                    line5: constituencyOffice.line5 || '',
+                    postcode: constituencyOffice.postcode || '',
+                    phone: constituencyOffice.phone || '',
+                    email: constituencyOffice.email || ''
+                };
+            }
+
+            // Extract social media contacts
+            const socialTypes = ['Twitter', 'X', 'Facebook', 'Instagram', 'LinkedIn', 'Bluesky', 'YouTube'];
+            socialTypes.forEach(type => {
+                const socialContact = contactData.find(contact => contact.type === type);
+                if (socialContact && socialContact.line1) {
+                    socialMedia[type.toLowerCase()] = socialContact.line1;
+                }
+            });
         }
         
         return {
@@ -103,10 +160,12 @@ export const API = {
             party: latestParty?.name || 'Independent',
             partyAbbreviation: latestParty?.abbreviation || 'IND',
             constituency: constituency?.value?.name || '',
-            email: email || `${memberData.nameAddressAs?.toLowerCase().replace(/\s+/g, '.')}@parliament.uk`,
+            email: email,
             phone: phone,
             website: website,
-            twitter: twitter,
+            socialMedia: socialMedia,
+            parliamentaryAddress: parliamentaryAddress,
+            constituencyAddress: constituencyAddress,
             thumbnailUrl: memberData.thumbnailUrl || '',
             gender: memberData.gender || '',
             currentlyActive: memberData.latestHouseMembership?.membershipStatus?.statusIsActive || false

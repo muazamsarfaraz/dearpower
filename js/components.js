@@ -59,7 +59,7 @@ export const Components = {
                         <div id="geocoder-container" class="mb-4"></div>
                         <div id="map-container" class="map-preview"></div>
                         <div id="mp-info-container" class="mt-4 d-none"></div>
-                        <div id="next-btn-container" class="text-center mt-4" style="display: ${showNextButton ? 'block' : 'none'};">
+                        <div id="next-btn-container" class="text-center mt-4 ${showNextButton ? '' : 'd-none'}">
                             <button class="btn btn-primary" id="next-to-compose-btn" data-action="continue-to-compose">
                                 Next <i class="fas fa-arrow-right ms-2"></i>
                             </button>
