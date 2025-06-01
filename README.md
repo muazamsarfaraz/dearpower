@@ -188,7 +188,7 @@ write2power/
 
 ## 🚀 Live Application
 
-**Production URL**: https://yellow-harbor-production.up.railway.app
+**Production URL**: https://write2power-production.up.railway.app
 
 ## 📝 Contributing
 
