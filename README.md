@@ -1,166 +1,222 @@
-# DearPower
+# DearPower 🏛️
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-In%20Development-yellow" alt="Status: In Development">
+  <img src="https://img.shields.io/badge/Status-Production%20Ready-green" alt="Status: Production Ready">
   <img src="https://img.shields.io/badge/Platform-Web-blue" alt="Platform: Web">
   <img src="https://img.shields.io/badge/UK%20Focus-Parliament-red" alt="UK Focus: Parliament">
+  <img src="https://img.shields.io/badge/AI-GPT--4.1--nano-purple" alt="AI: GPT-4.1-nano">
 </p>
 
-## 📣 Empowering UK Citizens to Be Heard
+## 📣 Empowering UK Citizens with AI-Powered Parliamentary Communication
 
-DearPower is a web platform designed to bridge the gap between UK citizens and those in positions of power and influence. It simplifies and streamlines the process of contacting MPs, journalists, editors, and ombudsmen, making it easier for citizens to raise concerns, report problems, and demand accountability.
-
-## 🎯 Purpose
-
-In a functioning democracy, citizens should have easy access to their representatives and those who shape public discourse. DearPower removes barriers by:
-
-- Providing a user-friendly interface to quickly find and contact the right person
-- Streamlining the message creation process with helpful templates and guidelines
-- Making it easier to track and follow up on communications
-- Creating transparency around common issues being reported
+DearPower is a modern web application that empowers UK citizens to write personalized, professional emails to their Members of Parliament (MPs) using AI assistance and enhanced address selection. Built with cutting-edge technology, it bridges the gap between citizens and their representatives through intelligent automation and user-friendly design.
 
 ## ✨ Features
 
-### Current Features
+### 🎯 **Core Functionality**
+- **Enhanced Address Selection**: Mapbox-powered geocoder with precise door-level address selection
+- **MP Lookup**: Automatic MP identification based on exact address location
+- **AI-Powered Email Generation**: Uses OpenAI's GPT-4.1-nano model for cost-effective, high-quality emails
+- **Rich Text Editor**: WYSIWYG editor with formatting toolbar (bold, italic, headers, lists)
+- **Topic Selection**: Choose from healthcare, education, environment, housing, cost of living, or custom issues
+- **Article Integration**: Reference news articles or reports to strengthen your arguments
 
-- **MP Contact System**: 
-  - Postcode-based MP lookup using official UK Parliament data
-  - Comprehensive MP profiles with contact details and office information
-  - Integrated postcode validation and autocompletion
-  - Address lookup functionality for easy form completion
-  - Message composition with templates and character counting
+### 🎨 **User Experience**
+- **Professional Interface**: Clean, modern design with intuitive navigation
+- **Mobile Responsive**: Works seamlessly on desktop, tablet, and mobile devices
+- **Real-time Validation**: Form validation and error handling throughout the flow
+- **Progress Tracking**: Clear step-by-step progress indicator
+- **Email Editing**: Full editing capabilities with live preview
 
-### Upcoming Features
+### 🔧 **Technical Features**
+- **Secure API Integration**: Environment-based configuration for API keys
+- **Precise Geolocation**: Mapbox geocoder with nearby address suggestions
+- **Professional Email Formatting**: Proper structure, tone, and MP addressing
+- **Article Content Analysis**: Automatic article fetching and content integration
 
-- **Multi-Channel Outreach**: 
-  - Contact journalists, newspaper editors, and media organizations
-  - Reach out to ombudsmen and regulatory bodies
-  - Connect with local councilors and regional representatives
+## 🚀 How It Works
 
-- **Campaign Tools**:
-  - Create and share template messages for specific issues
-  - Track campaign effectiveness
-  - Collaborate with others on important topics
+1. **📍 Address Selection**:
+   - Type your postcode or address in the Mapbox geocoder
+   - Select from dropdown suggestions
+   - Choose your exact door-level address from nearby options
 
-- **Response Tracking**:
-  - Log responses from officials
-  - Set reminders for follow-ups
-  - Share outcomes with other users
+2. **🏛️ MP Identification**:
+   - Automatic MP lookup based on your precise address
+   - Display MP contact information and constituency details
 
-## 🔧 Technology Stack
+3. **✍️ Email Composition**:
+   - Select a topic that matters to you
+   - Add your full name (address auto-populated)
+   - Optionally include reference articles
 
-- **Frontend**: HTML5, CSS3, JavaScript (vanilla)
-- **UI Framework**: Bootstrap 5
-- **Icons**: Font Awesome 6
-- **APIs**:
-  - UK Parliament Members API
-  - Postcodes.io for postcode validation/autocomplete
-  - OS Places API for address lookup (configurable)
+4. **🤖 AI Generation**:
+   - GPT-4.1-nano creates a personalized, professional email
+   - Includes proper MP addressing, clear issue articulation, and specific asks
 
-## 🚀 Getting Started
+5. **📝 Review & Edit**:
+   - Rich text editor with formatting toolbar
+   - Edit content with bold, italic, headers, and lists
+   - Live preview of final formatted email
 
-### Prerequisites
+6. **📧 Ready to Send**:
+   - Copy the final email to send to your MP
+   - All contact details provided for easy sending
 
-- A modern web browser (Chrome, Firefox, Safari, Edge)
-- Basic web server for local development (or use a service like GitHub Pages for deployment)
+## 🛠️ Technology Stack
 
-### Installation
+### **Frontend**
+- **HTML5/CSS3/JavaScript**: Modern web standards with ES6+ features
+- **Bootstrap 5**: Responsive design framework with custom styling
+- **Quill.js**: Rich text editor for email formatting
+- **Mapbox GL JS**: Interactive maps and geocoding
+- **FontAwesome**: Professional iconography
 
-1. Clone the repository:
+### **Backend**
+- **Node.js**: Runtime environment
+- **Express.js**: Web application framework
+- **OpenAI API**: GPT-4.1-nano model for email generation
+- **Mapbox API**: Geocoding and address services
+- **UK Parliament API**: MP data and constituency information
+
+### **Deployment**
+- **Railway**: Cloud platform deployment
+- **Environment Variables**: Secure API key management
+- **Git**: Version control with GitHub integration
+
+## ⚙️ Setup & Installation
+
+### **Prerequisites**
+- Node.js 18+ (for built-in fetch support)
+- OpenAI API key
+- Mapbox API key
+
+### **Installation Steps**
+
+1. **Clone the repository**
    ```bash
    git clone https://github.com/muazamsarfaraz/dearpower.git
-   ```
-
-2. Open the project folder:
-   ```bash
    cd dearpower
    ```
 
-3. To run locally, you can use any web server. For example, with Python:
+2. **Install dependencies**
    ```bash
-   # Python 3
-   python -m http.server
+   npm install
    ```
 
-4. Open your browser and navigate to `http://localhost:8000`
+3. **Environment Configuration**
+   Create a `.env` file in the root directory:
+   ```env
+   # OpenAI API Configuration
+   OPENAI_API_KEY=your_openai_api_key_here
 
-### API Configuration
+   # Mapbox API Configuration
+   MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
 
-For full functionality:
+   # Server Configuration
+   PORT=3000
+   NODE_ENV=development
+   ```
 
-1. **For OS Places API integration (address lookup)**:
-   - Register for an API key at the [OS Data Hub](https://osdatahub.os.uk/)
-   - Replace `YOUR_OS_PLACES_API_KEY` in the code with your actual API key
-   - Uncomment the relevant production code in the `getAddressesFromPostcode` function
+4. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
 
-## 📝 Usage
+5. **Open Application**
+   Navigate to `http://localhost:3000` in your browser
 
-1. **Find Your Representative**:
-   - Enter your postcode in the search bar
-   - The system will automatically validate your postcode and find your MP
+### **Production Deployment**
+```bash
+npm run start
+```
 
-2. **View Contact Information**:
-   - See comprehensive details about your MP
-   - Find their office addresses, phone numbers, and email
+## 🔧 API Endpoints
 
-3. **Compose Your Message**:
-   - Use the guided form to create your message
-   - Optional templates are available for common issues
-   - Character counting helps ensure appropriate message length
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/config` | Get client configuration (Mapbox token) |
+| `POST` | `/api/generate-email` | Generate AI-powered email content |
+| `GET` | `/api/mp/:postcode` | Get MP information for postcode |
 
-4. **Review and Send**:
-   - Preview your message before sending
-   - Receive confirmation when your message is delivered
+## 📁 Project Structure
 
-## 🔍 Accessibility
+```
+dearpower/
+├── css/                    # Stylesheets
+│   ├── main.css           # Main application styles
+│   ├── components.css     # Component-specific styles
+│   └── utilities.css      # Utility classes
+├── js/                    # JavaScript modules
+│   ├── app.js            # Main application logic
+│   ├── components.js     # UI component generators
+│   ├── mapbox.js         # Mapbox integration
+│   └── api.js            # API communication
+├── index.html            # Main application page
+├── server.js             # Express server
+├── package.json          # Dependencies and scripts
+├── .env                  # Environment variables (not in repo)
+└── README.md            # This file
+```
 
-DearPower is designed with accessibility in mind:
+## 🌟 Key Features Explained
 
-- High contrast mode for visually impaired users
-- Keyboard navigation support
-- Screen reader compatible content
-- Responsive design for all device sizes
+### **Enhanced Address Selection**
+- **Mapbox Geocoder**: Professional address search with autocomplete
+- **Precise Location**: Door-level accuracy for proper MP constituency matching
+- **Multiple Selection Methods**: Geocoder dropdown, nearby addresses list, map clicking
+- **UK-Focused**: Optimized for UK postcodes and addresses
 
-## 🤝 Contributing
+### **AI Email Generation**
+- **GPT-4.1-nano**: Cost-effective model optimized for professional communication
+- **Context-Aware**: Incorporates MP name, constituency, and user details
+- **Professional Tone**: Appropriate formality and structure for parliamentary communication
+- **Article Integration**: Analyzes and incorporates reference material when provided
 
-We welcome contributions to DearPower! If you'd like to contribute:
+### **Rich Text Editing**
+- **WYSIWYG Editor**: What-you-see-is-what-you-get editing experience
+- **Formatting Toolbar**: Bold, italic, headers, numbered/bullet lists
+- **Live Preview**: Real-time preview of formatted content
+- **Markdown Compatibility**: Maintains markdown storage for backend compatibility
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## 🔐 Security & Privacy
 
-### Development Areas
+- **API Key Security**: All sensitive keys stored in environment variables
+- **No Data Storage**: User data is not permanently stored
+- **Secure Communication**: HTTPS in production
+- **Client-Side Processing**: Address and MP data processed locally when possible
 
-We're particularly looking for help with:
+## 🚀 Live Application
 
-- Frontend enhancements and accessibility improvements
-- Additional API integrations for contacting journalists and ombudsmen
-- User testing and feedback
-- Documentation and tutorials
+**Production URL**: https://yellow-harbor-production.up.railway.app
 
-## 📜 License
+## 📝 Contributing
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes** with proper testing
+4. **Commit your changes**: `git commit -m 'Add amazing feature'`
+5. **Push to the branch**: `git push origin feature/amazing-feature`
+6. **Open a Pull Request**
 
-## 🙏 Acknowledgements
+### **Development Guidelines**
+- Follow existing code style and structure
+- Test all functionality before submitting
+- Update documentation for new features
+- Ensure mobile responsiveness
+- Maintain accessibility standards
 
-- [UK Parliament API](https://members-api.parliament.uk/) for MP data
-- [Postcodes.io](https://postcodes.io/) for postcode validation
-- [Ordnance Survey](https://osdatahub.os.uk/) for address lookup services
-- [Bootstrap](https://getbootstrap.com/) for UI components
-- [Font Awesome](https://fontawesome.com/) for icons
+## 📄 License
 
-## 📞 Contact
+MIT License - see [LICENSE](LICENSE) file for details.
 
-For questions, feedback, or support:
+## 🙏 Acknowledgments
 
-- Create an issue on GitHub
-- Contact the maintainers at [your-email@example.com]
+- **OpenAI**: For providing the GPT-4.1-nano model
+- **Mapbox**: For geocoding and mapping services
+- **UK Parliament**: For providing MP data APIs
+- **Railway**: For hosting and deployment platform
 
 ---
 
-<p align="center">
-  <i>Empowering UK citizens to speak truth to power</i>
-</p> 
+**Made with ❤️ for UK democracy and civic engagement**

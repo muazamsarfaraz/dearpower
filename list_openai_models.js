@@ -1,5 +1,13 @@
-// Script to list all available OpenAI models via API
-// This will help us see what models are currently available
+#!/usr/bin/env node
+/**
+ * OpenAI Models Discovery Script
+ *
+ * This utility script fetches and displays all available OpenAI models
+ * organized by category for easy reference during development.
+ *
+ * Usage: node list_openai_models.js
+ * Requires: OPENAI_API_KEY in .env file
+ */
 
 require('dotenv').config();
 
