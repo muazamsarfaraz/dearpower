@@ -395,6 +395,9 @@ class DearPowerApp {
     }
 }
 
+// Rich text editor instance
+let quillEditor = null;
+
 // Email editing functions (global scope for onclick handlers)
 window.toggleEmailEdit = function() {
     const previewDisplay = document.getElementById('email-preview-display');
@@ -403,21 +406,56 @@ window.toggleEmailEdit = function() {
     previewDisplay.classList.add('d-none');
     editMode.classList.remove('d-none');
 
-    // Focus on textarea
-    document.getElementById('email-edit-textarea').focus();
+    // Initialize Quill editor if not already done
+    if (!quillEditor) {
+        initializeQuillEditor();
+    }
+
+    // Set content from current email
+    if (window.dearPowerApp && window.dearPowerApp.userData.emailContent) {
+        const htmlContent = Components.markdownToHtml(window.dearPowerApp.userData.emailContent);
+        quillEditor.root.innerHTML = htmlContent;
+    }
+
+    // Focus on editor
+    quillEditor.focus();
 };
 
-window.saveEmailEdit = function() {
-    const textarea = document.getElementById('email-edit-textarea');
-    const newContent = textarea.value;
+// Initialize Quill rich text editor
+function initializeQuillEditor() {
+    const toolbarOptions = [
+        ['bold', 'italic', 'underline'],
+        [{ 'header': [1, 2, 3, false] }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['link'],
+        ['clean']
+    ];
+
+    quillEditor = new Quill('#email-rich-editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: toolbarOptions
+        },
+        placeholder: 'Type your email content here...',
+        formats: ['bold', 'italic', 'underline', 'header', 'list', 'bullet', 'link']
+    });
+}
+
+window.saveRichTextEdit = function() {
+    if (!quillEditor) return;
+
+    // Get HTML content from Quill
+    const htmlContent = quillEditor.root.innerHTML;
+
+    // Convert HTML back to markdown for storage
+    const markdownContent = htmlToMarkdown(htmlContent);
 
     // Update the app's email content
     if (window.dearPowerApp) {
-        window.dearPowerApp.userData.emailContent = newContent;
+        window.dearPowerApp.userData.emailContent = markdownContent;
     }
 
     // Update the preview display with new content
-    const htmlContent = Components.markdownToHtml(newContent);
     document.querySelector('.email-content-html').innerHTML = htmlContent;
 
     // Switch back to preview mode
@@ -433,15 +471,12 @@ window.saveEmailEdit = function() {
     }
 };
 
-window.cancelEmailEdit = function() {
-    // Reset textarea to original content
-    const textarea = document.getElementById('email-edit-textarea');
-    if (window.dearPowerApp) {
-        textarea.value = window.dearPowerApp.userData.emailContent;
+window.cancelRichTextEdit = function() {
+    // Reset editor to original content
+    if (quillEditor && window.dearPowerApp && window.dearPowerApp.userData.emailContent) {
+        const htmlContent = Components.markdownToHtml(window.dearPowerApp.userData.emailContent);
+        quillEditor.root.innerHTML = htmlContent;
     }
-
-    // Hide preview if visible
-    hideMarkdownPreview();
 
     // Switch back to preview mode
     const previewDisplay = document.getElementById('email-preview-display');
@@ -451,116 +486,83 @@ window.cancelEmailEdit = function() {
     previewDisplay.classList.remove('d-none');
 };
 
-// Rich text formatting functions
-window.insertMarkdown = function(before, after) {
-    const textarea = document.getElementById('email-edit-textarea');
-    if (!textarea) return;
+// Convert HTML back to markdown (simplified conversion)
+function htmlToMarkdown(html) {
+    // Create a temporary div to parse HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
+    let markdown = '';
 
-    let replacement;
-    if (selectedText) {
-        // Wrap selected text
-        replacement = before + selectedText + after;
-    } else {
-        // Insert placeholder text
-        const placeholder = before === '**' ? 'bold text' :
-                          before === '*' ? 'italic text' :
-                          before === '### ' ? 'Header Text' : 'text';
-        replacement = before + placeholder + after;
-    }
-
-    // Replace text
-    textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
-
-    // Set cursor position
-    const newCursorPos = selectedText ? start + replacement.length : start + before.length;
-    textarea.setSelectionRange(newCursorPos, newCursorPos + (selectedText ? 0 : replacement.length - before.length - after.length));
-    textarea.focus();
-};
-
-window.insertList = function(type) {
-    const textarea = document.getElementById('email-edit-textarea');
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
-
-    let replacement;
-    if (selectedText) {
-        // Convert selected lines to list
-        const lines = selectedText.split('\n');
-        const listItems = lines.map((line, index) => {
-            const trimmed = line.trim();
-            if (!trimmed) return '';
-            return type === 'numbered' ? `${index + 1}. ${trimmed}` : `- ${trimmed}`;
-        }).join('\n');
-        replacement = listItems;
-    } else {
-        // Insert sample list
-        if (type === 'numbered') {
-            replacement = '1. First item\n2. Second item\n3. Third item';
-        } else {
-            replacement = '- First item\n- Second item\n- Third item';
+    // Process each child node
+    function processNode(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            return node.textContent;
         }
+
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            const tagName = node.tagName.toLowerCase();
+            const textContent = Array.from(node.childNodes).map(processNode).join('');
+
+            switch (tagName) {
+                case 'strong':
+                case 'b':
+                    return `**${textContent}**`;
+                case 'em':
+                case 'i':
+                    return `*${textContent}*`;
+                case 'u':
+                    return `_${textContent}_`;
+                case 'h1':
+                    return `# ${textContent}\n\n`;
+                case 'h2':
+                    return `## ${textContent}\n\n`;
+                case 'h3':
+                    return `### ${textContent}\n\n`;
+                case 'p':
+                    return `${textContent}\n\n`;
+                case 'br':
+                    return '\n';
+                case 'ol':
+                    let olResult = '';
+                    let counter = 1;
+                    Array.from(node.children).forEach(li => {
+                        if (li.tagName.toLowerCase() === 'li') {
+                            olResult += `${counter}. ${processNode(li)}\n`;
+                            counter++;
+                        }
+                    });
+                    return olResult + '\n';
+                case 'ul':
+                    let ulResult = '';
+                    Array.from(node.children).forEach(li => {
+                        if (li.tagName.toLowerCase() === 'li') {
+                            ulResult += `- ${processNode(li)}\n`;
+                        }
+                    });
+                    return ulResult + '\n';
+                case 'li':
+                    return textContent;
+                case 'a':
+                    const href = node.getAttribute('href');
+                    return href ? `[${textContent}](${href})` : textContent;
+                default:
+                    return textContent;
+            }
+        }
+
+        return '';
     }
 
-    // Add line breaks if needed
-    const beforeText = textarea.value.substring(0, start);
-    const afterText = textarea.value.substring(end);
-    const needsBreakBefore = beforeText && !beforeText.endsWith('\n');
-    const needsBreakAfter = afterText && !afterText.startsWith('\n');
+    markdown = Array.from(tempDiv.childNodes).map(processNode).join('');
 
-    const finalReplacement = (needsBreakBefore ? '\n' : '') + replacement + (needsBreakAfter ? '\n' : '');
+    // Clean up extra newlines
+    markdown = markdown.replace(/\n{3,}/g, '\n\n').trim();
 
-    // Replace text
-    textarea.value = beforeText + finalReplacement + afterText;
+    return markdown;
+}
 
-    // Set cursor position
-    const newCursorPos = start + finalReplacement.length;
-    textarea.setSelectionRange(newCursorPos, newCursorPos);
-    textarea.focus();
-};
-
-window.insertLineBreak = function() {
-    const textarea = document.getElementById('email-edit-textarea');
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const replacement = '\n\n';
-
-    // Insert line break
-    textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(start);
-
-    // Set cursor position
-    textarea.setSelectionRange(start + replacement.length, start + replacement.length);
-    textarea.focus();
-};
-
-window.previewMarkdown = function() {
-    const textarea = document.getElementById('email-edit-textarea');
-    const previewDiv = document.getElementById('markdown-preview');
-    const previewContent = document.getElementById('markdown-preview-content');
-
-    if (!textarea || !previewDiv || !previewContent) return;
-
-    // Convert markdown to HTML
-    const htmlContent = Components.markdownToHtml(textarea.value);
-    previewContent.innerHTML = htmlContent;
-
-    // Show preview
-    previewDiv.classList.remove('d-none');
-};
-
-window.hideMarkdownPreview = function() {
-    const previewDiv = document.getElementById('markdown-preview');
-    if (previewDiv) {
-        previewDiv.classList.add('d-none');
-    }
-};
+// Note: Rich text formatting is now handled by Quill editor toolbar
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
